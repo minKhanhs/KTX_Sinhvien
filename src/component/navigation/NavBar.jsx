@@ -30,7 +30,7 @@ const NavBar = () => {
     }, []);
 
     return (
-        <div className="flex h-25 w-full p-4 justify-between sticky bg-white z-50">
+        <div className="flex h-25 w-full p-4 justify-between sticky top-0 bg-white z-50 xl:pl-44 xl:pr-44 shadow-md mb-3">
             {/* Logo va menu */}
             <div className="flex items-center gap-3 ml-2">
                 <button 
@@ -77,7 +77,6 @@ const NavBar = () => {
                         <div className="absolute right-0 mt-2 w-48 bg-white border border-red-500 shadow-lg rounded-md z-50">
                             <ul className="text-sm">
                                 <li className="p-3 hover:bg-red-400 cursor-pointer flex gap-3" onClick={() => handleNavigate('/user')}> <FaUser/> <span>Thông tin cá nhân</span></li>
-                                <li className="p-3 hover:bg-red-400 cursor-pointer flex gap-3" onClick={() => handleNavigate('/phongdangthue')}> <MdMeetingRoom/> <span>Phòng đang thuê</span></li>
                                 <li className="p-3 hover:bg-red-400 cursor-pointer flex gap-3" onClick={() => handleNavigate('/baocao')}> <TbMessageReportFilled/> <span>Báo cáo</span></li>
                                 <li className="p-3 hover:bg-red-400 cursor-pointer flex gap-3"> <IoLogOut/> <span>Đăng xuất</span></li>
                             </ul>
