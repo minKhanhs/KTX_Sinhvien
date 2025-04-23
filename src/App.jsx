@@ -1,27 +1,29 @@
 import {Routes, Route} from 'react-router-dom';
 import Navbar from "./component/navigation/NavBar";
-import Home from './pages/Home';
-import HoaDon from './pages/HoaDon';
-import ThanhToan from './pages/ThanhToan';
-import User from './pages/User';
-import BaoCao from './pages/BaoCao';
-import Phong from './pages/Phong';
-import SinhVien from './pages/SinhVien';
+import Dashboard from "./pages/Dashboard";
+import User from "./pages/User";
+import Students from "./pages/Students";
+import Rooms from "./pages/Rooms";
+import Contracts from "./pages/Contracts";
+import Utilities from "./pages/Utilities";
+import StudentDetail from "./pages/StudentDetail";
 import './App.css'
 
 function App() {
   return (
-    <div>
+    <div className='flex-1 flex h-screen'>
       <Navbar/>
+      <div className="flex-1 overflow-y-auto p-6">
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/hoadon" element={<HoaDon/>}/>
-        <Route path="/thanhtoan" element={<ThanhToan/>}/>
+        <Route path="/" element={<Dashboard />} />
         <Route path="/user" element={<User/>}/>
-        <Route path="/baocao" element={<BaoCao/>}/>
-        <Route path="/phong/:roomId" element={<Phong/>} />
-        <Route path="/sinhvien/:studentId" element={<SinhVien/>} />
+        <Route path="/students" element={<Students/>}/>
+        <Route path="/rooms" element={<Rooms/>}/>
+        <Route path="/contracts" element={<Contracts/>}/>
+        <Route path="/utilities" element={<Utilities/>} />
+        <Route path="/studentdetail" element={<StudentDetail/>} />
       </Routes>
+      </div>
     </div>
   )
 }

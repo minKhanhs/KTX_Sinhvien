@@ -1,90 +1,116 @@
-import Logo from "../../assets/logo.png";
-import avt from "../../assets/avt.jpg";
-import { IoSearch, IoLogOut, IoMenu } from "react-icons/io5";
-import { FaUser } from "react-icons/fa";
-import { TbMessageReportFilled } from "react-icons/tb";
-import { MdMeetingRoom, MdClose } from "react-icons/md";
-import {Link, useNavigate} from 'react-router-dom';
-import { useState, useRef, useEffect } from "react";
-
-const NavBar = () => {
-    const [showDropdown, setShowDropdown] = useState(false);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const dropdownRef = useRef(null);
-    const navigate = useNavigate();
-
-    const handleNavigate = (path) => {
-        navigate(path);
-        setMobileMenuOpen(false);
-    }
-
-    const handleClickOutside = (e) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-            setShowDropdown(false);
-        }
-    };
-
-    useEffect(() => {
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {document.removeEventListener("mousedown", handleClickOutside)};
-    }, []);
-
-    return (
-        <div className="flex h-25 w-full p-4 justify-between sticky top-0 bg-white z-50 xl:pl-44 xl:pr-44 shadow-md mb-3">
-            {/* Logo va menu */}
-            <div className="flex items-center gap-3 ml-2">
-                <button 
-                    className="md:hidden text-2xl"
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faStreetView,
+  faUsers,
+  faChalkboardTeacher,
+  faSignOutAlt,
+  faInfoCircle,
+  faFire
+} from "@fortawesome/free-solid-svg-icons";
+export default function NavBar() {
+  return (
+    <nav className="h-screen w-60 flex flex-col items-start border py-2 px-4 border-gray-200 border-l-0 border-t-0 border-b-0 text-gray-600">
+      <div className="flex items-center w-full text-center align-middle justify-center pt-6">
+        <div className="text-logo font-bold text-indigo-600 text-3xl">KTX Bách Khoa</div>
+      </div>
+      <div className="flex flex-col w-full justify-between h-full font-raleway font-medium mb-4">
+        <div className="pt-16 flex flex-col gap-12 w-full">
+          <div>
+            <div className=" text-gray-400 mb-4 px-3 text-xs">MAIN MENU</div>
+            <ul className="flex flex-col w-full gap-1">
+              <li>
+                <Link
+                  to="/"
+                  className="flex w-full py-2 px-3 rounded-full hover:bg-gray-100 align-middle items-center"
                 >
-                    {mobileMenuOpen ? <MdClose /> : <IoMenu />}
-                </button>
-                <img src={Logo} alt="Logo" className="w-10 h-10"/>
-                <span className="font-bold text-xl md:text-2xl">KTXBachKhoa</span>
-            </div>
+                  <div className="flex items-center pl-1 pr-4">
+                    <FontAwesomeIcon icon={faChalkboardTeacher} />
+                  </div>
+                  <div className="flex items-center ">Dashboard</div>
+                </Link>
+              </li>
 
-            {/* Desktop*/}
-            <div className="hidden md:flex justify-center items-center gap-10 mx-auto">
-                <Link to="/" className="hover:text-red-500 active:text-red-600 font-semibold text-lg md:text-xl cursor-pointer">Trang chủ</Link>
-                <Link to="/hoadon" className="hover:text-red-500 active:text-red-600 font-semibold text-lg md:text-xl cursor-pointer">Hóa đơn điện nước</Link>
-                <Link to="/thanhtoan" className="hover:text-red-500 active:text-red-600 font-semibold text-lg md:text-xl cursor-pointer">Thanh toán tiền phòng</Link>
-            </div>
-
-            {/* Mobile*/}
-            {mobileMenuOpen && (
-                <div className="md:hidden absolute top-20 left-0 right-0 bg-white shadow-lg py-4 px-6 z-40">
-                    <div className="flex flex-col gap-4">
-                        <Link to="/" className="hover:text-red-500 font-semibold text-lg" onClick={() => setMobileMenuOpen(false)}>Trang chủ</Link>
-                        <Link to="/hoadon" className="hover:text-red-500 font-semibold text-lg" onClick={() => setMobileMenuOpen(false)}>Hóa đơn điện nước</Link>
-                        <Link to="/thanhtoan" className="hover:text-red-500 font-semibold text-lg" onClick={() => setMobileMenuOpen(false)}>Thanh toán tiền phòng</Link>
-                    </div>
-                </div>
-            )}
-
-            <div className="flex items-center gap-3">
-                <div className="hidden md:flex items-center gap-2">
-                    <input type="text" placeholder="Tìm kiếm" className="focus:ring-red-200 focus:ring-1 focus:outline-none p-2 rounded"/>
-                    <IoSearch className="text-2xl cursor-pointer"/>
-                </div>
-                <div className="relative" ref={dropdownRef}>
-                    <img 
-                        src={avt} 
-                        alt="AVT" 
-                        className="rounded-full object-cover w-10 h-10 ring-2 ring-red-500 cursor-pointer" 
-                        onClick={() => setShowDropdown(!showDropdown)} 
+              <li>
+                <Link
+                  to="/user"
+                  className="flex w-full py-2 px-3 rounded-full hover:bg-gray-100 align-middle items-center"
+                >
+                  <div className="flex items-center pl-1 pr-4">
+                    <FontAwesomeIcon icon={faUsers} />
+                  </div>
+                  <div className="flex items-center">Quản lí người dùng</div>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/students"
+                  className=" flex w-full py-2 px-3 rounded-full hover:bg-gray-100 align-middle items-center"
+                >
+                  <div className="flex items-center pl-1 pr-4">
+                    <FontAwesomeIcon
+                      icon={faStreetView}
+                      className="text-lg text-center items-center align-middle"
                     />
-                    {showDropdown && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white border border-red-500 shadow-lg rounded-md z-50">
-                            <ul className="text-sm">
-                                <li className="p-3 hover:bg-red-400 cursor-pointer flex gap-3" onClick={() => handleNavigate('/user')}> <FaUser/> <span>Thông tin cá nhân</span></li>
-                                <li className="p-3 hover:bg-red-400 cursor-pointer flex gap-3" onClick={() => handleNavigate('/baocao')}> <TbMessageReportFilled/> <span>Báo cáo</span></li>
-                                <li className="p-3 hover:bg-red-400 cursor-pointer flex gap-3"> <IoLogOut/> <span>Đăng xuất</span></li>
-                            </ul>
-                        </div>
-                    )}
+                  </div>
+
+                  <div className="flex items-center">Quản lí sinh viên</div>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/contracts"
+                  className="flex w-full py-2 px-3 rounded-full hover:bg-gray-100 align-middle items-center"
+                >
+                  <div className="flex items-center pl-1 pr-4">
+                    <FontAwesomeIcon icon={faFire} />
+                  </div>
+                  <div className="flex items-center ">Hợp đồng cho thuê</div>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/utilities"
+                  className="flex w-full py-2 px-3 rounded-full hover:bg-gray-100 align-middle items-center"
+                >
+                  <div className="flex items-center pl-1 pr-4">
+                    <FontAwesomeIcon icon={faFire} />
+                  </div>
+                  <div className="flex items-center ">Hóa đơn điện nước</div>
+                </Link>
+              </li>
+            </ul>
+          </div>
+      </div>
+      <div>
+          <ul className="flex flex-col w-full ">
+            <li>
+              <Link
+                to="/about"
+                className="flex w-full py-2 px-3 rounded-full text-gray-400 hover:text-indigo-600 align-middle items-center"
+              >
+                <div className="flex items-center pl-1 pr-4">
+                  <FontAwesomeIcon icon={faInfoCircle} />
                 </div>
-            </div>
+                <div className="flex items-center ">About Us</div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/about"
+                className="flex w-full py-2 px-3 rounded-full text-gray-400 hover:text-red-700  align-middle items-center"
+              >
+                <div className="flex items-center pl-1 pr-4">
+                  <FontAwesomeIcon icon={faSignOutAlt} />
+                </div>
+                <div className="flex items-center " >Log Out</div>
+              </Link>
+            </li>
+          </ul>
         </div>
-    )
-}
-export default NavBar;
+      </div>
+    </nav>  
+  );
+};
+
+
