@@ -15,7 +15,6 @@ mongoose.connect(mongoURI)
 .then(() => console.log('Kết nối MongoDB thành công'))
 .catch((err) => console.error('Kết nối MongoDB thất bại:', err));
 
-// Route test
 app.get('/', async(req, res) => {
     try{
         const users = await User.find();
