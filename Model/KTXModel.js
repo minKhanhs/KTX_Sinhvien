@@ -37,7 +37,8 @@ const roomSchema = new mongoose.Schema({
   currentOccupancy: Number,
   status: String,
   pricePerMonth: String,
-  note: String
+  note: String,
+  imageUrl: String,
 }, { timestamps: true });
 
 export const Room = mongoose.model('Room', roomSchema, 'rooms');

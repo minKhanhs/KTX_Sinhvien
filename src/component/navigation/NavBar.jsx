@@ -12,7 +12,7 @@ export default function NavBar() {
   return (
     <nav className="h-screen w-60 flex flex-col items-start border py-2 px-4 border-gray-200 border-l-0 border-t-0 border-b-0 text-gray-600">
       <div className="flex items-center w-full text-center align-middle justify-center pt-6">
-        <div className="text-logo font-bold text-indigo-600 text-3xl">KTX Bách Khoa</div>
+        <div className="text-logo font-bold text-red-600 text-3xl">KTX Bách Khoa</div>
       </div>
       <div className="flex flex-col w-full justify-between h-full font-raleway font-medium mb-4">
         <div className="pt-16 flex flex-col gap-12 w-full">
