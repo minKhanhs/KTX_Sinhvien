@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ['admin', 'student'] },
   phone: String,
   gender: { type: String, enum: ['male', 'female'] }
-}, { timestamps: true });
+});
 
 export const User = mongoose.model('User', userSchema, 'user');
 
@@ -24,7 +24,7 @@ const studentSchema = new mongoose.Schema({
   phone: String,
   address: String,
   avtURL: String
-}, { timestamps: true });
+});
 
 export const Student = mongoose.model('Student', studentSchema, 'students');
 
@@ -39,7 +39,7 @@ const roomSchema = new mongoose.Schema({
   pricePerMonth: String,
   note: String,
   imageUrl: String,
-}, { timestamps: true });
+});
 
 export const Room = mongoose.model('Room', roomSchema, 'rooms');
 
@@ -69,6 +69,6 @@ const utilitySchema = new mongoose.Schema({
   waterCost: Number,
   totalCost: Number,
   status: String
-}, { timestamps: true });
+});
 
 export const Utility = mongoose.model('Utility', utilitySchema, 'utilities');

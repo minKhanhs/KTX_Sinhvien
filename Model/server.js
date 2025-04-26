@@ -1,7 +1,9 @@
 
 import express from 'express';
 import mongoose from 'mongoose';
-import { User, Student, Room, Contract, Utility } from './KTXModel.js';
+import roomsRoutes from './routes/roomsRoutes.js';
+import studentsRoutes from './routes/studentsRoutes.js';
+import usersRoutes from './routes/usersRoutes.js';
 
 
 const app = express();
@@ -15,15 +17,9 @@ mongoose.connect(mongoURI)
 .then(() => console.log('Kết nối MongoDB thành công'))
 .catch((err) => console.error('Kết nối MongoDB thất bại:', err));
 
-app.get('/', async(req, res) => {
-    try{
-        const users = await User.find();
-        res.json(users);
-    } catch(err){
-        console.error(err);
-        res.status(500).send('Lỗi');
-    }
-});
+app.use('/api/rooms', roomsRoutes);
+app.use('/api/students', studentsRoutes);
+app.use('/api/users', usersRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server chạy tại http://localhost:${PORT}`);

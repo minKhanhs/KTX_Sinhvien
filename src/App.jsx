@@ -14,7 +14,7 @@ function App() {
   return (
     <div className='flex-1 flex h-screen'>
       <Navbar />
-      <div className="flex-1 overflow-y-auto p-6">
+      <div className="flex-1 overflow-y-auto">
         <TopBar />
         <Routes>
           <Route path="/" element={<Dashboard />} />
