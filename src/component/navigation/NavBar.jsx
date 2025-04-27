@@ -6,7 +6,6 @@ import {
   faChalkboardTeacher,
   faSignOutAlt,
   faInfoCircle,
-  faFire
 } from "@fortawesome/free-solid-svg-icons";
 export default function NavBar() {
   return (
@@ -72,18 +71,7 @@ export default function NavBar() {
                   <div className="flex items-center">Quản lí phòng</div>
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="/utilities"
-                  className="flex w-full py-2 px-3 rounded-full hover:bg-gray-100 align-middle items-center"
-                >
-                  <div className="flex items-center pl-1 pr-4">
-                    <FontAwesomeIcon icon={faFire} />
-                  </div>
-                  <div className="flex items-center ">Hóa đơn điện nước</div>
-                </Link>
-              </li>
-              
+
             </ul>
           </div>
       </div>

@@ -1,74 +1,134 @@
 import mongoose from 'mongoose'
+import isEmail from 'validator/lib/isEmail'
 
-/* ===== User ===== */
-const userSchema = new mongoose.Schema({
-  fullName: String,
-  email: { type: String, unique: true },
-  password: String,
-  role: { type: String, enum: ['admin', 'student'] },
-  phone: String,
-  gender: { type: String, enum: ['male', 'female'] }
-});
-
-export const User = mongoose.model('User', userSchema, 'user');
-
-
-/* ===== Student ===== */
 const studentSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  studentCode: { type: String, unique: true },
-  roomId: { type: mongoose.Schema.Types.ObjectId, ref: 'Room' },
-  dateOfBirth: { type: Date },
-  department: String,
-  identityCard: String,
-  phone: String,
-  address: String,
-  avtURL: String
-});
+    fullName: {
+        type: String,
+        required: true,
+    },
+    dateOfBirth: {
+        type: Date,
+    },
+    phone: {
+        type: String,
+    },
+    avtUrl: {
+        type: String,
+        default: '../src/assets/avt404.jpg',
+    },
+    studentCode: {
+        type: Number,
+        required: true,
+        unique: true,
+    },
+    department: {
+        type: String,
+    },
+    roomNumber: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Room',
+    },
+    contract: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Contract',
+    },
+})
 
-export const Student = mongoose.model('Student', studentSchema, 'students');
+export const Student = mongoose.model('Student', studentSchema)
 
+const usserSchema = new mongoose.Schema({
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        validate: [isEmail, 'Invalid email address'],
+    },
+    fullName: {
+        type: String,
+        required: true,
+    },
+    password: {
+        type: String,
+        required: true,
+    },
+    role: {
+        type: String,
+        enum: ['admin', 'student'],
+        default: 'user',
+    },
+})
+export const User = mongoose.model('User', usserSchema)
 
-/* ===== Room ===== */
 const roomSchema = new mongoose.Schema({
-  roomNumber: { type: String, unique: true }, // roomNumber = mã phòng
-  type: String,
-  capacity: Number,
-  currentOccupancy: Number,
-  status: String,
-  pricePerMonth: String,
-  note: String,
-  imageUrl: String,
-});
+    roomNumber: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    maxStudents: {
+        type: Number,
+        required: true,
+        default: 5,
+    },
+    students: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Student',
+        },
+    ],
+    utilities: [{
+        waterUsage: {
+            type: Number,
+            default: 0,
+        },
+        electricityUsage: {
+            type: Number,
+            default: 0,
+        },
+        waterCost: {
+            type: Number,
+            default: 0,
+        },
+        electricityCost: {
+            type: Number,
+            default: 0,
+        },
+        month: {
+            type: String,
+            required: true,
+        },
+        year: {
+            type: String,
+            required: true,
+        },
+        status: {
+            type: String,
+            enum: ['paid', 'unpaid'],
+            default: 'unpaid',
+        },
+    }],
+})
+export const Room = mongoose.model('Room', roomSchema)
 
-export const Room = mongoose.model('Room', roomSchema, 'rooms');
-
-
-/* ===== Contract ===== */
 const contractSchema = new mongoose.Schema({
-  studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
-  roomId: { type: mongoose.Schema.Types.ObjectId, ref: 'Room' },
-  startDate: Date,
-  endDate: Date,
-  status: String,
-  depositAmount: Number,
-  createdAt: Date
-});
+    student: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Student',
+        required: true,
+    },
+    startDate: {
+        type: Date,
+        required: true,
+    },
+    endDate: {
+        type: Date,
+        required: true,
+    },
+    status: {
+        type: String,
+        enum: ['active', 'inactive'],
+        default: 'active',
+    },
+})
+export const Contract = mongoose.model('Contract', contractSchema)
 
-export const Contract = mongoose.model('Contract', contractSchema, 'contracts');
-
-
-/* ===== Utility ===== */
-const utilitySchema = new mongoose.Schema({
-  roomId: { type: mongoose.Schema.Types.ObjectId, ref: 'Room' },
-  month: Number,
-  year: Number,
-  electricityUsage: Number,
-  waterUsage: Number,
-  electricityCost: Number,
-  waterCost: Number,
-  totalCost: Number,
-  status: String
-});
-
-export const Utility = mongoose.model('Utility', utilitySchema, 'utilities');

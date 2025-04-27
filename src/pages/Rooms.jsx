@@ -8,6 +8,9 @@ export default function Rooms() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedRoom, setSelectedRoom] = useState(null); // State for the selected room
+  const [roomDetails, setRoomDetails] = useState(null); // State for room details
+  const [roomUtilities, setRoomUtilities] = useState(null); // State for room utilities
 
   const roomsPerPage = 9;
 
@@ -62,6 +65,37 @@ export default function Rooms() {
     }
   };
 
+  const handleRoomClick = async (roomId) => {
+    try {
+      // Fetch room details
+      const detailsResponse = await fetch(`/api/rooms/${roomId}/details`);
+      if (!detailsResponse.ok) {
+        throw new Error("Failed to fetch room details");
+      }
+      const detailsData = await detailsResponse.json();
+
+      // Fetch room utilities
+      const utilitiesResponse = await fetch(`/api/utilities/${roomId}`);
+      if (!utilitiesResponse.ok) {
+        throw new Error("Failed to fetch room utilities");
+      }
+      const utilitiesData = await utilitiesResponse.json();
+
+      // Set the selected room and its data
+      setSelectedRoom(roomId);
+      setRoomDetails(detailsData);
+      setRoomUtilities(utilitiesData);
+    } catch (err) {
+      alert("Error fetching room data: " + err.message);
+    }
+  };
+
+  const handleCloseMiniPage = () => {
+    setSelectedRoom(null);
+    setRoomDetails(null);
+    setRoomUtilities(null);
+  };
+
   if (error) {
     return <p className="text-red-500">Error: {error}</p>;
   }
@@ -88,33 +122,40 @@ export default function Rooms() {
               </div>
             ))
           : rooms.map((room) => (
-              <div key={room._id} className="relative rounded shadow hover:shadow-xl hover:scale-105 transition-transform">
+              <div
+                key={room._id}
+                className="relative rounded shadow hover:shadow-xl hover:scale-105 transition-transform cursor-pointer"
+                onClick={() => handleRoomClick(room._id)}
+              >
                 <button
-                  onClick={() => handleDeleteRoom(room._id)}
-                  className="absolute top-2 right-2 text-red-500 hover: text-3xltext text-3xl-red text-3xl-700 text-3xl"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering the room click
+                    handleDeleteRoom(room._id);
+                  }}
+                  className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-3xl"
                 >
                   <FontAwesomeIcon icon={faXmark} />
                 </button>
                 <img
-                  src={room.imageUrl || "https://unsplash.com/photos/purple-and-yellow-abstract-painting-0W4XLGITrHg"}
+                  src={room.imageUrl || "https://via.placeholder.com/150"}
                   alt={room.roomNumber}
-                  className="w-full h-85 object-cover"
+                  className="w-full h-85 object-cover rounded mb-4"
                 />
-                  <div className="p-4">
-                    <h2 className="text-xl font-bold mb-2">{room.roomNumber}</h2>
-                    <p className="text-gray-700 mb-1">
-                      <strong>Type:</strong> {room.type}
-                    </p>
-                    <p className="text-gray-700 mb-1">
-                      <strong>Students:</strong> {room.currentOccupancy}/{room.capacity}
-                    </p>
-                    <p className="text-gray-700 mb-1">
-                      <strong>Price/Month:</strong> ${room.pricePerMonth}
-                    </p>
-                    <p className="text-gray-700 mb-1">
-                      <strong>Note:</strong> {room.note || "No additional notes"}
-                    </p>
-                  </div>
+                <div className="p-4">
+                  <h2 className="text-xl font-bold mb-2">{room.roomNumber}</h2>
+                  <p className="text-gray-700 mb-1">
+                    <strong>Type:</strong> {room.type}
+                  </p>
+                  <p className="text-gray-700 mb-1">
+                    <strong>Students:</strong> {room.currentOccupancy}/{room.capacity}
+                  </p>
+                  <p className="text-gray-700 mb-1">
+                    <strong>Price/Month:</strong> ${room.pricePerMonth}
+                  </p>
+                  <p className="text-gray-700 mb-1">
+                    <strong>Note:</strong> {room.note || "No additional notes"}
+                  </p>
+                </div>
               </div>
             ))}
       </div>
@@ -137,6 +178,47 @@ export default function Rooms() {
           Next
         </button>
       </div>
+
+      {/* Mini-page for room details */}
+      {selectedRoom && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-3/4 max-w-2xl">
+            <button
+              onClick={handleCloseMiniPage}
+              className="absolute top-4 right-4 text-red-500 hover:text-red-700 text-2xl"
+            >
+              <FontAwesomeIcon icon={faXmark} />
+            </button>
+            <h2 className="text-2xl font-bold mb-4">Room Details</h2>
+            <div className="mb-4">
+              <h3 className="text-xl font-semibold">Students</h3>
+              {roomDetails ? (
+                <ul className="list-disc pl-6">
+                  {roomDetails.students.map((student) => (
+                    <li key={student._id}>
+                      {student.name} - {student.email}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>Loading students...</p>
+              )}
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold">Utilities</h3>
+              {roomUtilities ? (
+                <ul className="list-disc pl-6">
+                  {roomUtilities.map((utility) => (
+                    <li key={utility._id}>{utility.name}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>Loading utilities...</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
