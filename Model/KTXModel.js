@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import isEmail from 'validator/lib/isEmail'
+import isEmail from 'validator/lib/isEmail.js'
 
 const studentSchema = new mongoose.Schema({
     fullName: {
@@ -24,7 +24,7 @@ const studentSchema = new mongoose.Schema({
     department: {
         type: String,
     },
-    roomNumber: {
+    room: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Room',
     },
@@ -36,7 +36,7 @@ const studentSchema = new mongoose.Schema({
 
 export const Student = mongoose.model('Student', studentSchema)
 
-const usserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
@@ -50,25 +50,28 @@ const usserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-    },
-    role: {
-        type: String,
-        enum: ['admin', 'student'],
-        default: 'user',
-    },
+    }
 })
-export const User = mongoose.model('User', usserSchema)
+export const User = mongoose.model('User', userSchema)
 
 const roomSchema = new mongoose.Schema({
     roomNumber: {
         type: String,
         required: true,
         unique: true,
-    },
+    }, 
     maxStudents: {
         type: Number,
         required: true,
         default: 5,
+    },
+    note: {
+        type: String,
+        default: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl tincidunt eget nullam non.'
+    },
+    price: {
+        type: Number,
+        required: true,
     },
     students: [
         {
@@ -82,14 +85,6 @@ const roomSchema = new mongoose.Schema({
             default: 0,
         },
         electricityUsage: {
-            type: Number,
-            default: 0,
-        },
-        waterCost: {
-            type: Number,
-            default: 0,
-        },
-        electricityCost: {
             type: Number,
             default: 0,
         },
@@ -114,6 +109,11 @@ const contractSchema = new mongoose.Schema({
     student: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Student',
+        required: true,
+    },
+    room: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Room',
         required: true,
     },
     startDate: {
