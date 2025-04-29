@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faStreetView,
-  faUsers,
+  faHouseUser,
   faChalkboardTeacher,
   faSignOutAlt,
   faInfoCircle,
@@ -29,18 +29,6 @@ export default function NavBar() {
                   <div className="flex items-center ">Dashboard</div>
                 </Link>
               </li>
-
-              <li>
-                <Link
-                  to="/user"
-                  className="flex w-full py-2 px-3 rounded-full hover:bg-gray-100 align-middle items-center"
-                >
-                  <div className="flex items-center pl-1 pr-4">
-                    <FontAwesomeIcon icon={faUsers} />
-                  </div>
-                  <div className="flex items-center">Quản lí người dùng</div>
-                </Link>
-              </li>
               <li>
                 <Link
                   to="/students"
@@ -63,7 +51,7 @@ export default function NavBar() {
                 >
                   <div className="flex items-center pl-1 pr-4">
                     <FontAwesomeIcon
-                      icon={faStreetView}
+                      icon={faHouseUser}
                       className="text-lg text-center items-center align-middle"
                     />
                   </div>

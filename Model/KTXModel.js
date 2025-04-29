@@ -80,28 +80,13 @@ const roomSchema = new mongoose.Schema({
         },
     ],
     utilities: [{
-        waterUsage: {
-            type: Number,
-            default: 0,
-        },
-        electricityUsage: {
-            type: Number,
-            default: 0,
-        },
-        month: {
-            type: String,
-            required: true,
-        },
-        year: {
-            type: String,
-            required: true,
-        },
-        status: {
-            type: String,
-            enum: ['paid', 'unpaid'],
-            default: 'unpaid',
-        },
+        type : mongoose.Schema.Types.ObjectId,
+        ref: 'Utilities',
     }],
+    imageUrl: {
+        type: String,
+        default: '../src/assets/room404.jpg',
+    },
 })
 export const Room = mongoose.model('Room', roomSchema)
 
@@ -132,3 +117,27 @@ const contractSchema = new mongoose.Schema({
 })
 export const Contract = mongoose.model('Contract', contractSchema)
 
+const utilitySchema = new mongoose.Schema({
+    room: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Room',
+    },
+    waterUsage: {
+        type: Number,
+        default: 0,
+    },
+    electricityUsage: {
+        type: Number,
+        default: 0,
+    },
+    date: {
+        type: Date,
+        default: Date.now,
+    },
+    status: {
+        type: String,
+        enum: ['paid', 'unpaid'],
+        default: 'unpaid',
+    },
+})
+export const Utility = mongoose.model('Utilities', utilitySchema)

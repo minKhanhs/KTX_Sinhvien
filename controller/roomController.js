@@ -21,7 +21,7 @@ const roomController = {
     },
     getARoom: async (req, res) => {
         try{
-            const room = await Room.findById(req.params.id).populate('students');
+            const room = await Room.findById(req.params.id).populate('students').populate('utilities');
             if(!room) return res.status(404).json({message: 'Room not found'});
             res.status(200).json(room);
         }catch(err){
@@ -48,23 +48,32 @@ const roomController = {
         }
     },
     addUtilities: async (req, res) => {
-        try{
-            const room = await Room.findById(req.params.id);
-            if(!room) return res.status(404).json({message: 'Room not found'});
-            room.utilities.unshift({
-                waterUsage: req.body.waterUsage || 0,
-                electricityUsage: req.body.electricityUsage || 0,
-                month: req.body.month,
-                year: req.body.year,
-                status: req.body.status || 'unpaid'
-            });
-            if(room.utilities.length > 3) {
-                room.utilities.pop();
+        try {
+            const roomId = req.params.id;
+            const { waterUsage, electricityUsage, date, status } = req.body;
+    
+            const room = await Room.findById(roomId);
+            if (!room) {
+                return res.status(404).json({ message: 'Không tìm thấy phòng' });
             }
+    
+            const newUtility = {
+                waterUsage: waterUsage || 0,
+                electricityUsage: electricityUsage || 0,
+                date: date ? new Date(date) : Date.now(),
+                status: status || 'unpaid',
+            };
+    
+            room.utilities.push(newUtility);
             await room.save();
-            res.status(200).json(room);
-        }catch(err){
-            res.status(500).json(err);
+    
+            return res.status(200).json({
+                message: 'Thêm utility thành công',
+                room,
+            });
+        } catch (error) {
+            console.error('Lỗi khi thêm utility:', error.message);
+            return res.status(500).json({ message: 'Lỗi server', error: error.message });
         }
     },
     updateUtilities: async (req, res) => {

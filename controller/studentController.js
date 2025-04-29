@@ -9,6 +9,7 @@ const studentController = {
             const savedStudent = await newStudent.save();
             if(req.body.room) {
                 const room = await Room.findById(req.body.room);
+                if(!room) return res.status(404).json({message: 'Room not found'});
                 room.students.push(savedStudent._id);
                 await room.updateOne({$push: {students: savedStudent._id}});
             };

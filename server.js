@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import studentRouter from './routes/student.js';
 import roomRouter from './routes/room.js';
 import contractRouter from './routes/contract.js';
+import utilityRouter from './routes/utility.js';
 
 dotenv.config();
 const app = express();
@@ -26,6 +27,7 @@ app.use(morgan('common'));
 app.use('/api/student', studentRouter);
 app.use('/api/room', roomRouter);
 app.use('/api/contract', contractRouter);
+app.use('/api/utility', utilityRouter);
 
 
 
