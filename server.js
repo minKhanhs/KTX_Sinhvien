@@ -5,10 +5,16 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
+
+
+
 import studentRouter from './routes/student.js';
 import roomRouter from './routes/room.js';
 import contractRouter from './routes/contract.js';
 import utilityRouter from './routes/utility.js';
+import authRouter from './routes/auth.js';
+import middlewareController from './controller/middlewareController.js';
 
 dotenv.config();
 const app = express();
@@ -22,12 +28,16 @@ mongoose.connect((process.env.MONGODB_URL))
 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(cors());
+app.use(cookieParser());
 app.use(morgan('common'));
 
+
+app.use('/api', authRouter);
 app.use('/api/student', studentRouter);
 app.use('/api/room', roomRouter);
-app.use('/api/contract', contractRouter);
-app.use('/api/utility', utilityRouter);
+app.use('/api/contract', middlewareController.verifyTokenAdminAuth, contractRouter);
+app.use('/api/utility', middlewareController.verifyTokenAdminAuth, utilityRouter);
+ 
 
 
 

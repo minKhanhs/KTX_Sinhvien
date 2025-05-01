@@ -1,4 +1,4 @@
-import logoSchool from "../assets/logo.png";
+
 import {useLocation} from "react-router-dom";
 const routeTitles = {
     "/": "Dashboard",
@@ -18,7 +18,7 @@ export default function TopBar() {
       </div>
       <div className="flex gap-2 align-middle items-center text-indigo-700">
         <img
-          src={logoSchool}
+          src="../../public/logo.png"
           alt="Logo"
           className="h-12 w-8"
         />

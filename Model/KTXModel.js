@@ -50,7 +50,16 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-    }
+        minlenghth: 6,
+    },
+    isAdmin: {
+        type: Boolean,
+        default: false,
+    },
+    refreshTokens: {
+        type: [String],
+        default: [],
+    },
 })
 export const User = mongoose.model('User', userSchema)
 
