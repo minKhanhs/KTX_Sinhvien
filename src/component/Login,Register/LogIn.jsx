@@ -2,20 +2,38 @@ import { useState } from "react";
 import {loginUser} from "../../Redux/apiRequest.js";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-const Login = () => {
+import { toast } from "react-toastify";
+
+const LogIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");  
-  const [error, setError] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Ngăn chặn hành vi mặc định load của form
+    if(!email || !password) {
+      toast.error("Vui lòng nhập đầy đủ thông tin tài khoản và mật khẩu.");
+      return;
+    }
     const newUser = {
       email: email,
       password: password,
     };
-    loginUser(newUser, dispatch, navigate);
-  }
+    try{
+      const res = await loginUser(newUser, dispatch, navigate);
+      //thành công 
+      if(res && res.status === 200) {
+        toast.success("Đăng nhập thành công!");
+        navigate("/");
+      }
+    }catch (error) {
+      //thất bại
+      if (error.response ) {
+        const message = error.response.data.message || "Đăng nhập thất bại!";
+        toast.error(message);
+      }
+    };
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#F8F8F8]">
@@ -41,18 +59,17 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
         <button type="submit" className="bg-blue-500 text-white w-full h-1/7 rounded-lg py-2 hover:bg-blue-700">
           Đăng nhập
         </button>
       </form>
     </div>
     <div className="hidden md:flex items-center w-1/2 h-full justify-center bg-white rounded-tr-2xl rounded-br-2xl">
-      <img className="w-2/3 h-2/3 object-contain" src="../../../public/login-image.jpg" alt="login-imgage"></img>
+      <img className="w-2/3 h-2/3 object-contain" src="/login-image.jpg" alt="login-imgage"></img>
     </div>
 
   </div>
 </div>
-  );
+);
 }
-export default Login;
+export default LogIn;

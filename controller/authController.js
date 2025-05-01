@@ -42,11 +42,11 @@ const authController = {
         try {
             const user = await User.findOne({ email: req.body.email });
             if (!user) {
-                return res.status(404).json({ message: 'user not found' });
+                return res.status(404).json({ message: 'Tài khoản không đúng' });
             }
             const validPassword = await bcrypt.compare(req.body.password, user.password);
             if (!validPassword) {
-                return res.status(404).json({ message: 'Wrong password' });
+                return res.status(401).json({ message: 'Sai mật khẩu' });
             }
             if(user && validPassword) {
                 const accessToken = authController.generateAccessToken(user);

@@ -11,6 +11,8 @@ import Page404 from "./pages/Page404";
 import PrivateRoute from './component/PrivateRoute';
 import Login from './component/Login,Register/LogIn';
 import './App.css'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const location = useLocation();
@@ -31,6 +33,19 @@ function App() {
           <Route path="*" element={<Page404 />} />
         </Routes>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        toastClassName="text-lg bg-white text-black rounded-xl shadow-md border border-gray-300 p-4"
+        bodyClassName="text-base"
+      />
     </div>
   )
 }

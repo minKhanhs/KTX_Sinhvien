@@ -1,3 +1,5 @@
+//Quản lí trạng thái đăng nhập của người dùng
+
 import {createSlice} from '@reduxjs/toolkit';
 const authSlice = createSlice({
     name: 'auth',

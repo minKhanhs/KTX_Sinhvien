@@ -18,7 +18,7 @@ export default function TopBar() {
       </div>
       <div className="flex gap-2 align-middle items-center text-indigo-700">
         <img
-          src="../../public/logo.png"
+          src="/logo.png"
           alt="Logo"
           className="h-12 w-8"
         />
