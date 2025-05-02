@@ -14,7 +14,7 @@ const studentSchema = new mongoose.Schema({
     },
     avtUrl: {
         type: String,
-        default: '../src/assets/avt404.jpg',
+        default: 'avt404.jpg',
     },
     studentCode: {
         type: Number,
@@ -60,6 +60,11 @@ const userSchema = new mongoose.Schema({
         type: [String],
         default: [],
     },
+    avtUrl: {
+        type: String,
+        default: '/avt404.jpg',
+    },
+
 })
 export const User = mongoose.model('User', userSchema)
 
@@ -94,7 +99,7 @@ const roomSchema = new mongoose.Schema({
     }],
     imageUrl: {
         type: String,
-        default: '../src/assets/room404.jpg',
+        default: '/room404.jpg',
     },
 })
 export const Room = mongoose.model('Room', roomSchema)

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { useDispatch,useSelector } from "react-redux";
+import { getAllRooms } from "../Redux/apiRequest";
 
 export default function Rooms() {
   const [rooms, setRooms] = useState([]);
@@ -11,36 +13,18 @@ export default function Rooms() {
   const [selectedRoom, setSelectedRoom] = useState(null); // State for the selected room
   const [roomDetails, setRoomDetails] = useState(null); // State for room details
   const [roomUtilities, setRoomUtilities] = useState(null); // State for room utilities
-
+  const user = useSelector((state) => state.auth.login?.currentUser);
+  const dispatch = useDispatch();
   const roomsPerPage = 9;
 
   useEffect(() => {
-    const fetchRooms = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`/api/rooms?page=${currentPage}&limit=${roomsPerPage}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch rooms");
-        }
-        const data = await response.json();
-        setRooms(data.rooms);
-        setTotalPages(data.totalPages);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRooms();
-  }, [currentPage]);
-
+    getAllRooms(dispatch,user?.accessToken);
+  },[]);
   const handlePreviousPage = () => {
-    if (currentPage > 1) {
+    if (currentPage > totalPages) {
       setCurrentPage(currentPage - 1);
     }
   };
-
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);

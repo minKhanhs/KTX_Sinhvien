@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {loginUser} from "../../Redux/apiRequest.js";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const LogIn = () => {
@@ -59,13 +59,23 @@ const LogIn = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <button type="submit" className="bg-blue-500 text-white w-full h-1/7 rounded-lg py-2 hover:bg-blue-700">
+        <p className="mb-4 text-gray-600 md:hidden text-lg ">
+            <Link to="/register" className="underline hover:text-red-500">
+              Create an account
+            </Link>
+        </p>
+        <button type="submit" className="bg-red-500 text-white font-semibold text-lg w-full rounded-lg py-2 hover:bg-red-700">
           Đăng nhập
         </button>
       </form>
     </div>
-    <div className="hidden md:flex items-center w-1/2 h-full justify-center bg-white rounded-tr-2xl rounded-br-2xl">
-      <img className="w-2/3 h-2/3 object-contain" src="/login-image.jpg" alt="login-imgage"></img>
+    <div className="hidden md:flex md:flex-col items-center w-1/2 h-full justify-center bg-white rounded-tr-2xl rounded-br-2xl">
+      <img className="w-2/3 h-2/3 object-contain" src="/signin-image.jpg" alt="login-imgage"></img>
+      <p className="mt-4 text-sm text-gray-600">
+        <Link to="/register" className="underline hover:text-red-500 text-xl">
+          Create an account
+        </Link>
+      </p>
     </div>
 
   </div>

@@ -1,5 +1,4 @@
-
-import {useLocation} from "react-router-dom";
+import {useLocation} from "react-router-dom"; 
 const routeTitles = {
     "/": "Dashboard",
     "/user": "Quản lí người dùng",
@@ -10,7 +9,7 @@ const routeTitles = {
   };
 export default function TopBar() {
   const location = useLocation();
-    const title = routeTitles[location.pathname] || '';
+  const title = routeTitles[location.pathname] || '';
     return (
         <header className="border border-gray-200 h-30 px-8 flex justify-between border-t-0 border-l-0 border-r-0 sticky top-0 bg-white z-10 align-middle items-center">
       <div className="text-2xl font-bold font-raleway text-red-600 tracking-widest">

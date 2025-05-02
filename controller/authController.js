@@ -32,7 +32,7 @@ const authController = {
     },
     generateAccessToken: (user) => {
         // eslint-disable-next-line no-undef
-        return jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_ACCESS_KEY, { expiresIn: "30s" });
+        return jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_ACCESS_KEY, { expiresIn: "1d" });
     },
     generateRefreshToken: (user) => {
         // eslint-disable-next-line no-undef
@@ -127,8 +127,26 @@ const authController = {
         } catch (err) {
             res.status(500).json(err);
         }
-    }
-        
+    },
+    updatePassword: async (req, res) => {
+        try {
+            const user = await User.findById(req.params.id);
+            if (!user) return res.status(404).json("Người dùng không tồn tại!");
+    
+            const validPassword = await bcrypt.compare(req.body.oldPassword, user.password);
+            if (!validPassword) return res.status(401).json("Mật khẩu cũ không đúng!");
+    
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(req.body.newPassword, salt);
+    
+            user.password = hashedPassword;
+            await user.save();
+    
+            res.status(200).json("Cập nhật mật khẩu thành công!");
+        } catch (err) {
+            res.status(500).json(err);
+        }
+    },       
 
 }
 export default authController;

@@ -1,7 +1,8 @@
 // File này dùng để gọi API cho redux, không nên gọi trực tiếp trong component
 
 import axios from 'axios';
-import { loginStart,loginSuccess,loginFailure } from './authSlice';
+import { loginStart,loginSuccess,loginFailure, registerStart,registerFailure,registerSuccess,logoutFailure,logoutStart,logoutSuccess} from './authSlice';
+import { getRoomStart,getRoomSuccess,getRoomFailure } from './roomSlice';
 
 export const loginUser = async (user, dispatch, navigate) => {
     dispatch(loginStart());
@@ -15,3 +16,40 @@ export const loginUser = async (user, dispatch, navigate) => {
         throw err;
     }
 };
+export const registerUser = async (user, dispatch, navigate) => {
+    dispatch(registerStart());
+    try {
+        const res = await axios.post('http://localhost:3000/api/register', user);
+        dispatch(registerSuccess(res.data));
+        navigate('/login');
+        return res; // để front-end kiểm tra status
+    } catch (err) {
+        dispatch(registerFailure());
+        throw err;
+    }
+};
+export const logOut = async (dispatch,id,navigate,accessToken,axiosJWT) => {
+    dispatch(logoutStart());
+    try {
+        await axiosJWT.post('http://localhost:3000/api/logout',{id}, {
+            headers: {token: `Bearer ${accessToken}`}
+        });
+        dispatch(logoutSuccess());
+        navigate('/login');
+    } catch (err) {
+        dispatch(logoutFailure());
+        throw err;
+    }
+};
+export const getAllRooms = async (dispatch, accessToken) => {
+    dispatch(getRoomStart());
+    try{
+        const res = await axios.get('http://localhost:3000/api/room/get_room', {
+            headers: {token: `Bearer ${accessToken}`}
+        });
+        dispatch(getRoomSuccess(res.data));
+    }catch (err) {
+        dispatch(getRoomFailure());
+        throw err;
+    }
+}

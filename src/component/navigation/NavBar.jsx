@@ -1,13 +1,31 @@
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {useDispatch, useSelector } from "react-redux";
+import {logOut} from "../../Redux/apiRequest";
+import {createAxios} from "../../createInstance.js";
 import {
   faStreetView,
   faHouseUser,
   faChalkboardTeacher,
   faSignOutAlt,
+  faUserTie,
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import { logoutSuccess } from "../../Redux/authSlice.js";
 export default function NavBar() {
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const accessToken = user?.accessToken;
+  const id = user?._id;
+  const dispatch = useDispatch();
+  let axiosJWT = createAxios(user, dispatch, logoutSuccess);
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await logOut(dispatch,id, navigate,accessToken,axiosJWT);
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
   return (
     <nav className="h-screen w-60 flex flex-col items-start border py-2 px-4 border-gray-200 border-l-0 border-t-0 border-b-0 text-gray-600">
       <div className="flex items-center w-full text-center align-middle justify-center pt-6">
@@ -65,10 +83,23 @@ export default function NavBar() {
       </div>
       <div>
           <ul className="flex flex-col w-full ">
+            {user &&(
+            <li>
+              <Link
+                to="/userdetail"
+                className="flex w-full py-2 px-3 mb-5 rounded-full text-red-400 text-xl hover:text-red-600 align-middle items-center"
+              >
+                <div className="flex items-center pl-1 pr-4">
+                  <FontAwesomeIcon icon={faUserTie} />
+                </div>
+                <div className="flex items-center ">{user.fullName}</div>
+              </Link>
+            </li>
+            )}
             <li>
               <Link
                 to="/about"
-                className="flex w-full py-2 px-3 rounded-full text-gray-400 hover:text-indigo-600 align-middle items-center"
+                className="flex w-full py-2 px-3 rounded-full text-gray-400 hover:text-red-600 align-middle items-center"
               >
                 <div className="flex items-center pl-1 pr-4">
                   <FontAwesomeIcon icon={faInfoCircle} />
@@ -76,16 +107,11 @@ export default function NavBar() {
                 <div className="flex items-center ">About Us</div>
               </Link>
             </li>
-            <li>
-              <Link
-                to="/about"
-                className="flex w-full py-2 px-3 rounded-full text-gray-400 hover:text-red-700  align-middle items-center"
-              >
+            <li className="flex w-full py-2 px-3 rounded-full text-gray-400 hover:text-red-700  align-middle items-center cursor-pointer">
                 <div className="flex items-center pl-1 pr-4">
                   <FontAwesomeIcon icon={faSignOutAlt} />
                 </div>
-                <div className="flex items-center " >Log Out</div>
-              </Link>
+                <div className="flex items-center " onClick={handleLogout}>Log Out</div>
             </li>
           </ul>
         </div>

@@ -2,8 +2,10 @@
 
 import {configureStore} from '@reduxjs/toolkit';
 import authReducer from './authSlice';
+import roomReducer from './roomSlice';
 export default configureStore({
   reducer: { //cập nhật trạng thái dựa trên hành động
     auth: authReducer,
+    rooms: roomReducer,
   },
 });

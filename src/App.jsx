@@ -10,6 +10,8 @@ import TopBar from "./component/TopBar";
 import Page404 from "./pages/Page404";
 import PrivateRoute from './component/PrivateRoute';
 import Login from './component/Login,Register/LogIn';
+import Register from './component/Login,Register/Register';
+import UserDetail from './pages/UserDetail';
 import './App.css'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -19,12 +21,14 @@ function App() {
 
   return (
     <div className='flex-1 flex h-screen'>
-      {location.pathname !== "/login" && <Navbar />}
+      {location.pathname !== "/login" && location.pathname !== "/register" && <Navbar />}
       <div className="flex-1 overflow-y-auto">
-        {location.pathname !== "/login" &&<TopBar />}
+        {location.pathname !== "/login" && location.pathname !=="/register" && <TopBar />}
         <Routes>
           <Route path="/login" element={ <Login />} />
+          <Route path="/register" element={ <Register />} />
           <Route path="/" element={<PrivateRoute> <Dashboard /></PrivateRoute>} />
+          <Route path="/userdetail" element={<PrivateRoute> <UserDetail /></PrivateRoute>} />
           <Route path="/students" element={<PrivateRoute><Students /></PrivateRoute>} />
           <Route path="/rooms" element={<PrivateRoute><Rooms /></PrivateRoute>} />
           <Route path="/contracts" element={<PrivateRoute><Contracts /></PrivateRoute>} />
