@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { loginStart,loginSuccess,loginFailure, registerStart,registerFailure,registerSuccess,logoutFailure,logoutStart,logoutSuccess} from './authSlice';
-import { getRoomStart,getRoomSuccess,getRoomFailure } from './roomSlice';
+import { getRoomStart,getRoomSuccess,getRoomFailure,deleteRoomFailure,deleteRoomStart,deleteRoomSuccess,addRoomFailure, addRoomStart,addRoomSuccess } from './roomSlice';
 
 export const loginUser = async (user, dispatch, navigate) => {
     dispatch(loginStart());
@@ -41,7 +41,7 @@ export const logOut = async (dispatch,id,navigate,accessToken,axiosJWT) => {
         throw err;
     }
 };
-export const getAllRooms = async (dispatch, accessToken) => {
+export const getAllRooms = async (accessToken,dispatch) => {
     dispatch(getRoomStart());
     try{
         const res = await axios.get('http://localhost:3000/api/room/get_room', {
@@ -52,4 +52,26 @@ export const getAllRooms = async (dispatch, accessToken) => {
         dispatch(getRoomFailure());
         throw err;
     }
-}
+};
+export const deleteRoom = async (accessToken, dispatch, id) => {
+    dispatch(deleteRoomStart());
+    try{
+        const res = await axios.delete(`http://localhost:3000/api/room/delete_room/${id}`,{
+            headers:{token: `Bearer ${accessToken}`},
+        });
+        dispatch(deleteRoomSuccess(res.data));
+    }catch(err){
+        dispatch(deleteRoomFailure(err.response.data))
+    }
+};
+export const addRoom = async (roomData,accessToken, dispatch) => {
+    dispatch(addRoomStart());
+    try{
+        const res = await axios.post('http://localhost:3000/api/room/add_room',roomData, {
+            headers: {token: `Bearer ${accessToken}`}
+        });
+        dispatch(addRoomSuccess(res.data));
+    }catch(err){
+        dispatch(addRoomFailure(err.response.data))
+    }
+};

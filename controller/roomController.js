@@ -1,12 +1,42 @@
 import { Student,Room } from "../Model/KTXModel.js";
+import cloudinary from "../untils/cloudinary.js";
+
+const handleImageUpload = async (file) => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+            {
+                folder: 'ktx/rooms',
+                resource_type: 'image',
+                format: 'jpg',
+            },
+            (error, result) => {
+                if (error) reject(error);
+                else resolve(result.secure_url);
+            }
+        );
+        stream.end(file.buffer);
+    });
+};
 
 const roomController = {
     addRoom: async (req, res) => {
-        try{
-            const newRoom = new Room(req.body);
+        try {
+            let imageUrl = "";
+            if (req.file) {
+                imageUrl = await handleImageUpload(req.file);
+            }
+    
+            const data = {
+                ...req.body,
+                ...(imageUrl && { imageUrl }),
+            };
+            if (data.note === "") delete data.note;
+            if (data.imageUrl === "") delete data.imageUrl;
+    
+            const newRoom = new Room(data);
             const savedRoom = await newRoom.save();
             res.status(200).json(savedRoom);
-        }catch(err){
+        } catch (err) {
             console.log(err);
             res.status(500).json(err);
         }
@@ -29,11 +59,25 @@ const roomController = {
         }
     },
     updateRoom: async (req, res) => {
-        try{
-            const room = await Room.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true});
-            if(!room) return res.status(404).json({message: 'Room not found'});
+        try {
+            let imageUrl = "";
+            if (req.file) {
+                imageUrl = await handleImageUpload(req.file);
+            }
+    
+            const updateData = {
+                ...req.body,
+                ...(imageUrl && { imageUrl }),
+            };
+            if (updateData.note === "") delete updateData.note;
+            if (updateData.imageUrl === "") delete updateData.imageUrl;
+    
+            const room = await Room.findByIdAndUpdate(req.params.id, { $set: updateData }, { new: true });
+            if (!room) return res.status(404).json({ message: 'Room not found' });
+    
             res.status(200).json("Room updated successfully");
-        }catch(err){
+        } catch (err) {
+            console.log(err);
             res.status(500).json(err);
         }
     },

@@ -32,7 +32,7 @@ const authController = {
     },
     generateAccessToken: (user) => {
         // eslint-disable-next-line no-undef
-        return jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_ACCESS_KEY, { expiresIn: "1d" });
+        return jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_ACCESS_KEY, { expiresIn: "30s" });
     },
     generateRefreshToken: (user) => {
         // eslint-disable-next-line no-undef
