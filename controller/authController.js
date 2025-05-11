@@ -60,7 +60,7 @@ const authController = {
                     httpOnly: true,
                     secure: false,
                     path: '/',
-                    sameSite: 'strict',
+                    sameSite: 'none',
                 });
                 // eslint-disable-next-line no-unused-vars
                 const { password, refreshTokens, ...others } = user._doc;
@@ -78,7 +78,6 @@ const authController = {
             // Tìm user chứa refreshToken
             const user = await User.findOne({ refreshTokens: {$in: [refreshToken]} });
             if (!user) return res.status(403).json("Refresh token không hợp lệ!");
-    
             // Xác thực refreshToken
             // eslint-disable-next-line no-undef
             jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, async (err, decodedUser) => {
@@ -102,7 +101,7 @@ const authController = {
                     httpOnly: true,
                     secure: false,
                     path: '/',
-                    sameSite: 'strict',
+                    sameSite: 'lax',
                 });
     
                 res.status(200).json({ accessToken: newAccessToken });

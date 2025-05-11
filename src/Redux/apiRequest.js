@@ -41,10 +41,10 @@ export const logOut = async (dispatch,id,navigate,accessToken,axiosJWT) => {
         throw err;
     }
 };
-export const getAllRooms = async (accessToken,dispatch) => {
+export const getAllRooms = async (accessToken,dispatch,axiosJWT) => {
     dispatch(getRoomStart());
     try{
-        const res = await axios.get('http://localhost:3000/api/room/get_room', {
+        const res = await axiosJWT.get('http://localhost:3000/api/room/get_room', {
             headers: {token: `Bearer ${accessToken}`}
         });
         dispatch(getRoomSuccess(res.data));
@@ -53,10 +53,10 @@ export const getAllRooms = async (accessToken,dispatch) => {
         throw err;
     }
 };
-export const deleteRoom = async (accessToken, dispatch, id) => {
+export const deleteRoom = async (accessToken, dispatch, id, axiosJWT) => {
     dispatch(deleteRoomStart());
     try{
-        const res = await axios.delete(`http://localhost:3000/api/room/delete_room/${id}`,{
+        const res = await axiosJWT.delete(`http://localhost:3000/api/room/delete_room/${id}`,{
             headers:{token: `Bearer ${accessToken}`},
         });
         dispatch(deleteRoomSuccess(res.data));
@@ -64,10 +64,10 @@ export const deleteRoom = async (accessToken, dispatch, id) => {
         dispatch(deleteRoomFailure(err.response.data))
     }
 };
-export const addRoom = async (roomData,accessToken, dispatch) => {
+export const addRoom = async (roomData,accessToken, dispatch,axiosJWT) => {
     dispatch(addRoomStart());
     try{
-        const res = await axios.post('http://localhost:3000/api/room/add_room',roomData, {
+        const res = await axiosJWT.post('http://localhost:3000/api/room/add_room',roomData, {
             headers: {token: `Bearer ${accessToken}`}
         });
         dispatch(addRoomSuccess(res.data));

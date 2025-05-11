@@ -4,7 +4,9 @@ import { faXmark, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { addRoom, deleteRoom, getAllRooms } from "../Redux/apiRequest";
 import { toast } from "react-toastify";
+import {createAxios} from "../createInstance.js";
 import "react-toastify/dist/ReactToastify.css";
+import { loginSuccess } from "../Redux/authSlice.js";
 
 export default function Rooms() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,22 +24,22 @@ export default function Rooms() {
   const user = useSelector((state) => state.auth.login?.currentUser);
   const roomList = useSelector((state) => state.rooms.rooms.allRooms);
   const roomsPerPage = 9;
+  let axiosJWT = createAxios(user,dispatch,loginSuccess);
 
   // Fetch rooms when user changes or on mount
   useEffect(() => {
     if (user?.accessToken) {
       setLoading(true);
-      getAllRooms(user.accessToken, dispatch).finally(() => setLoading(false));
+      getAllRooms(user.accessToken, dispatch,axiosJWT).finally(() => setLoading(false));
     }
-  }, [user?.accessToken, dispatch]);
+  }, []);
 
   const handleDeleteRoom = (roomId) => {
     if (window.confirm("Bạn muốn xóa phòng này không?")) {
-      deleteRoom(user?.accessToken, dispatch, roomId)
+      deleteRoom(user?.accessToken, dispatch, roomId,axiosJWT)
         .then(() => {
           toast.success("Xóa phòng thành công");
-          // Sau khi xóa, reload danh sách phòng hoặc cập nhật lại roomList
-          getAllRooms(user?.accessToken, dispatch);
+          getAllRooms(user?.accessToken, dispatch,axiosJWT);
         })
         .catch(() => toast.error("Xóa phòng thất bại"));
     }
@@ -56,12 +58,12 @@ export default function Rooms() {
       return;
     }
 
-    addRoom(formData, user.accessToken, dispatch)
+    addRoom(formData, user.accessToken, dispatch,axiosJWT)
       .then(() => {
         toast.success("Thêm phòng thành công!");
         setShowForm(false);
         resetFormData();
-        getAllRooms(user.accessToken, dispatch);
+        getAllRooms(user.accessToken, dispatch,axiosJWT);
       })
       .catch(() => toast.error("Thêm phòng thất bại!"));
   };

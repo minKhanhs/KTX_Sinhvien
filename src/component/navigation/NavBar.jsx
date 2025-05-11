@@ -23,7 +23,7 @@ export default function NavBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const axiosJWT = createAxios(user, dispatch, logoutSuccess);
+  let axiosJWT = createAxios(user, dispatch, logoutSuccess);
 
   const handleLogout = async () => {
     try {
