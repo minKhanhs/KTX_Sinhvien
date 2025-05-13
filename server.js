@@ -28,7 +28,12 @@ mongoose.connect((process.env.MONGODB_URL))
 .catch((err) => console.error('Kết nối MongoDB thất bại:', err));
 
 app.use(bodyParser.json({limit: '50mb'}));
-app.use(cors());
+app.use(cors(
+  {
+    origin: 'http://localhost:5173',
+    credentials: true,
+  }
+));
 app.use(cookieParser());
 app.use(morgan('common'));
 
