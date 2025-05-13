@@ -22,7 +22,7 @@ const studentController = {
     //get all student
     getAllStudent: async (req, res) => {
         try{
-            const students = await Student.find();
+            const students = await Student.find().populate({path: 'room', select: 'roomNumber -_id'});
             res.status(200).json(students);
         }catch(err){
             res.status(500).json(err);
@@ -32,16 +32,7 @@ const studentController = {
         try{
             const student = await Student.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true});
             if(!student) return res.status(404).json({message: 'Student not found'});
-            res.status(200).json("Student updated successfully");
-        }catch(err){
-            res.status(500).json(err);
-        }
-    },
-    getStudentById: async (req, res) => {
-        try{
-            const student = await Student.findById(req.params.id).populate('room');
-            if(!student) return res.status(404).json({message: 'Student not found'});
-            res.status(200).json(student);
+            res.status(200).json("student updated successfully");
         }catch(err){
             res.status(500).json(err);
         }

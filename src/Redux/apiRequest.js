@@ -3,7 +3,9 @@
 import axios from 'axios';
 import { loginStart,loginSuccess,loginFailure, registerStart,registerFailure,registerSuccess,logoutFailure,logoutStart,logoutSuccess} from './authSlice';
 import { getRoomStart,getRoomSuccess,getRoomFailure,deleteRoomFailure,deleteRoomStart,deleteRoomSuccess,addRoomFailure, addRoomStart,addRoomSuccess } from './roomSlice';
-
+import { getStudentStart,getStudentSuccess,getStudentFailure,deleteStudentFailure,deleteStudentStart,deleteStudentSuccess,addStudentFailure, addStudentStart,addStudentSuccess,
+    updateStudentStart, updateStudentSuccess, updateStudentFailure
+ } from './studentSlice';
 
 //Đăng nhập, đăng kí, đăng xuất
 export const loginUser = async (user, dispatch, navigate) => {
@@ -81,4 +83,48 @@ export const addRoom = async (roomData,accessToken, dispatch,axiosJWT) => {
 };
 
 //Sinh Viên
-
+export const getAllStudents = async (accessToken,dispatch,axiosJWT) => {
+    dispatch(getStudentStart());
+    try{
+        const res = await axiosJWT.get('http://localhost:3000/api/student/get_student', {
+            headers: {token: `Bearer ${accessToken}`}
+        });
+        dispatch(getStudentSuccess(res.data));
+    }catch (err) {
+        dispatch(getStudentFailure());
+        throw err;
+    }
+};
+export const deleteStudent = async (accessToken, dispatch, id, axiosJWT) => {
+    dispatch(deleteStudentStart());
+    try{
+        const res = await axiosJWT.delete(`http://localhost:3000/api/student/delete_student/${id}`,{
+            headers:{token: `Bearer ${accessToken}`},
+        });
+        dispatch(deleteStudentSuccess(res.data));
+    }catch(err){
+        dispatch(deleteStudentFailure(err.response.data))
+    }
+};
+export const addStudent = async (studentData,accessToken, dispatch,axiosJWT) => {
+    dispatch(addStudentStart());
+    try{
+        const res = await axiosJWT.post('http://localhost:3000/api/student/add_student',studentData, {
+            headers: {token: `Bearer ${accessToken}`}
+        });
+        dispatch(addStudentSuccess(res.data));
+    }catch(err){
+        dispatch(addStudentFailure(err.response.data))
+    }
+};
+export const updateStudent = async (studentData,accessToken, dispatch,id,axiosJWT) => {
+    dispatch(updateStudentStart());
+    try{
+        const res = await axiosJWT.put(`http://localhost:3000/api/student/update_student/${id}`,studentData, {
+            headers: {token: `Bearer ${accessToken}`}
+        });
+        dispatch(updateStudentSuccess(res.data));
+    }catch(err){
+        dispatch(updateStudentFailure(err.response.data))
+    }
+};

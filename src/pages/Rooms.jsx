@@ -18,6 +18,7 @@ export default function Rooms() {
     maxStudents: "",
     note: "",
     price: "",
+    imageUrl: "",
   });
 
   const dispatch = useDispatch();

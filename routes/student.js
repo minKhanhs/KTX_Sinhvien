@@ -5,7 +5,6 @@ const router = express.Router();
 
 router.post('/add_student', middlewareController.verifyTokenAdminAuth, studentController.addStudent);
 router.get('/get_student',studentController.getAllStudent);
-router.get('/get_student/:id',studentController.getStudentById);
 router.put('/update_student/:id',middlewareController.verifyTokenAdminAuth, studentController.updateStudent);
 router.delete('/delete_student/:id',middlewareController.verifyTokenAdminAuth, studentController.deleteStudent);
 export default router;

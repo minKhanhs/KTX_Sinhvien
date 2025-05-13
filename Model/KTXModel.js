@@ -28,10 +28,6 @@ const studentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Room',
     },
-    contract: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Contract',
-    },
 })
 
 export const Student = mongoose.model('Student', studentSchema)
@@ -104,32 +100,6 @@ const roomSchema = new mongoose.Schema({
 })
 export const Room = mongoose.model('Room', roomSchema)
 
-const contractSchema = new mongoose.Schema({
-    student: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student',
-        required: true,
-    },
-    room: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Room',
-        required: true,
-    },
-    startDate: {
-        type: Date,
-        required: true,
-    },
-    endDate: {
-        type: Date,
-        required: true,
-    },
-    status: {
-        type: String,
-        enum: ['active', 'inactive'],
-        default: 'active',
-    },
-})
-export const Contract = mongoose.model('Contract', contractSchema)
 
 const utilitySchema = new mongoose.Schema({
     room: {
