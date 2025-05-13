@@ -11,7 +11,6 @@ import cookieParser from 'cookie-parser';
 
 import studentRouter from './routes/student.js';
 import roomRouter from './routes/room.js';
-import contractRouter from './routes/contract.js';
 import utilityRouter from './routes/utility.js';
 import authRouter from './routes/auth.js';
 import dashboardRouter from './routes/dashboard.js';
@@ -42,7 +41,6 @@ app.use('/api', authRouter);
 app.use('/api/dashboard', middlewareController.verifyTokenAdminAuth, dashboardRouter);
 app.use('/api/student', studentRouter);
 app.use('/api/room', roomRouter);
-app.use('/api/contract', middlewareController.verifyTokenAdminAuth, contractRouter);
 app.use('/api/utility', middlewareController.verifyTokenAdminAuth, utilityRouter);
  
 

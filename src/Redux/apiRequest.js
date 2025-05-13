@@ -4,6 +4,8 @@ import axios from 'axios';
 import { loginStart,loginSuccess,loginFailure, registerStart,registerFailure,registerSuccess,logoutFailure,logoutStart,logoutSuccess} from './authSlice';
 import { getRoomStart,getRoomSuccess,getRoomFailure,deleteRoomFailure,deleteRoomStart,deleteRoomSuccess,addRoomFailure, addRoomStart,addRoomSuccess } from './roomSlice';
 
+
+//Đăng nhập, đăng kí, đăng xuất
 export const loginUser = async (user, dispatch, navigate) => {
     dispatch(loginStart());
     try {
@@ -41,6 +43,8 @@ export const logOut = async (dispatch,id,navigate,accessToken,axiosJWT) => {
         throw err;
     }
 };
+
+//Phòng KTX
 export const getAllRooms = async (accessToken,dispatch,axiosJWT) => {
     dispatch(getRoomStart());
     try{
@@ -75,3 +79,6 @@ export const addRoom = async (roomData,accessToken, dispatch,axiosJWT) => {
         dispatch(addRoomFailure(err.response.data))
     }
 };
+
+//Sinh Viên
+

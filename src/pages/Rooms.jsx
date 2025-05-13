@@ -46,27 +46,28 @@ export default function Rooms() {
   };
 
   const handleRoomClick = (room) => {
-    console.log("Xem chi tiết phòng:", room);
+    console.log("thông tin phòng:", room);
   };
 
 
-  // Submit new room
-  const submitAddRoom = () => {
+  const submitAddRoom = async () => {
     const { roomNumber, maxStudents, price } = formData;
     if (!roomNumber || !maxStudents || !price) {
       toast.error("Vui lòng nhập đầy đủ thông tin bắt buộc!");
       return;
     }
 
-    addRoom(formData, user.accessToken, dispatch,axiosJWT)
-      .then(() => {
-        toast.success("Thêm phòng thành công!");
-        setShowForm(false);
-        resetFormData();
-        getAllRooms(user.accessToken, dispatch,axiosJWT);
-      })
-      .catch(() => toast.error("Thêm phòng thất bại!"));
+    try {
+      await addRoom(formData, user.accessToken, dispatch, axiosJWT);
+      toast.success("Thêm phòng thành công!");
+      setShowForm(false);
+      resetFormData();
+      getAllRooms(user.accessToken, dispatch, axiosJWT);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Thêm phòng thất bại!");
+    }
   };
+
 
   const resetFormData = () => {
     setFormData({
@@ -118,59 +119,88 @@ export default function Rooms() {
           Add Room
         </button>
       </div>
+        {showForm && (
+          <div className="fixed inset-0 flex justify-center items-center z-50">
+            {/* Background overlay with blur effect */}
+            <div className="absolute inset-0 bg-black opacity-50 backdrop-blur-md"></div>
+            
+            {/* The form dialog */}
+            <div className="bg-white w-full max-w-xl p-6 rounded-lg shadow-lg relative z-10">
+              <button
+                onClick={() => setShowForm(false)}
+                className="absolute top-3 right-3 text-gray-500 hover:text-red-500 text-2xl"
+              >
+                <FontAwesomeIcon icon={faXmark} />
+              </button>
+              <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">Thêm phòng mới</h2>
+              <div className=" flex flex-col justify-center items-center gap-4">
+                <div className="w-full mb-2">
+                  <label className="text-gray-700 mb-4 text-sm font-semibold">Số phòng:</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.roomNumber}
+                    onChange={(e) => setFormData({ ...formData, roomNumber: e.target.value })}
+                    className="border p-2 rounded w-full"
+                  />
+                </div>
+                <div className="w-full mb-2">
+                  <label className="text-gray-700 mb-2 text-sm font-semibold">Số học sinh:</label>
+                  <input
+                    type="number"
+                    required
+                    value={formData.maxStudents}
+                    onChange={(e) => setFormData({ ...formData, maxStudents: e.target.value })}
+                    className="border p-2 rounded w-full"
+                  />
+                </div>
+                <div className="w-full mb-2">
+                  <label className="text-gray-700 mb-2 text-sm font-semibold">Mô tả:</label>
+                <input
+                  type="text"
+                  value={formData.note}
+                  onChange={(e) => setFormData({ ...formData, note: e.target.value })}
+                  className="border p-2 rounded w-full"
+                />
+                </div>
+                <div className="w-full mb-2">
+                  <label className="text-gray-700 mb-2 text-sm font-semibold">Giá:</label>
+                  <input
+                    type="number"
+                    required
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    className="border p-2 rounded w-full"
+                  />
+                </div>
+                <div className="w-full mb-2">
+                  <label className="text-gray-700 mb-2 text-sm font-semibold">Link ảnh phòng:</label>
+                <input
+                  type="text"
+                  value={formData.imageUrl}
+                  onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                  className="border p-2 rounded w-full"
+                />
+                </div>
+              </div>
+              <div className="mt-6 flex justify-end gap-4">
+                <button
+                  onClick={submitAddRoom}
+                  className="px-5 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Xác nhận
+                </button>
+                <button
+                  onClick={() => setShowForm(false)}
+                  className="px-5 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                >
+                  Hủy
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
-      {showForm && (
-        <div className="bg-white p-6 rounded shadow mb-6">
-          <h2 className="text-xl font-bold mb-4">Thêm phòng mới</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              required
-              placeholder="Room Number"
-              value={formData.roomNumber}
-              onChange={(e) => setFormData({ ...formData, roomNumber: e.target.value })}
-              className="border p-2 rounded"
-            />
-            <input
-              type="number"
-              placeholder="Max Students"
-              required
-              value={formData.maxStudents}
-              onChange={(e) => setFormData({ ...formData, maxStudents: e.target.value })}
-              className="border p-2 rounded"
-            />
-            <input
-              type="text"
-              placeholder="Note"
-              value={formData.note}
-              onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-              className="border p-2 rounded"
-            />
-            <input
-              type="number"
-              required
-              placeholder="Price"
-              value={formData.price}
-              onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-              className="border p-2 rounded"
-            />
-          </div>
-          <div className="mt-4 flex gap-4">
-            <button
-              onClick={submitAddRoom}
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-            >
-              Xác nhận thêm
-            </button>
-            <button
-              onClick={() => setShowForm(false)}
-              className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
-            >
-              Hủy
-            </button>
-          </div>
-        </div>
-      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading

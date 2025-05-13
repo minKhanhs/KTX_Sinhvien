@@ -1,4 +1,4 @@
-import { Student,Room, Contract } from "../Model/KTXModel.js";
+import { Student,Room } from "../Model/KTXModel.js";
 
 
 const studentController = {

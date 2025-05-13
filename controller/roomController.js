@@ -5,7 +5,10 @@ const roomController = {
         try {
             const data = { ...req.body };
             if (data.note === "") delete data.note;
-
+            const existingRoom = await Room.findOne({ roomNumber: data.roomNumber });
+            if (existingRoom) {
+                return res.status(400).json({ message: "Phòng đã tồn tại!" });
+            }
             const newRoom = new Room(data);
             const savedRoom = await newRoom.save();
             res.status(200).json(savedRoom);

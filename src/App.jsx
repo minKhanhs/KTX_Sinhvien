@@ -5,7 +5,6 @@ import Students from "./pages/Students";
 import Rooms from "./pages/Rooms";
 import Contracts from "./pages/Contracts";
 import Utilities from "./pages/Utilities";
-import StudentDetail from "./pages/StudentDetail";
 import TopBar from "./component/TopBar";
 import Page404 from "./pages/Page404";
 import PrivateRoute from './component/PrivateRoute';
@@ -34,7 +33,6 @@ function App() {
           <Route path="/rooms" element={<PrivateRoute><Rooms /></PrivateRoute>} />
           <Route path="/contracts" element={<PrivateRoute><Contracts /></PrivateRoute>} />
           <Route path="/utilities" element={<PrivateRoute><Utilities /></PrivateRoute>} />
-          <Route path="/studentdetail" element={<PrivateRoute><StudentDetail /></PrivateRoute>} />
           <Route path="*" element={<Page404 />} />
         </Routes>
       </div>
