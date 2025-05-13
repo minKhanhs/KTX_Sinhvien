@@ -12,9 +12,11 @@ export default function Students() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: "",
+    fullName:  "",
     dateOfBirth: "",
     phone: "",
     studentCode: "",
@@ -38,6 +40,20 @@ export default function Students() {
       getAllStudents(user.accessToken, dispatch, axiosJWT).finally(() => setLoading(false));
     }
   }, []);
+  
+  const resetFormData = () => {
+    setFormData({
+      fullName: "",
+      dateOfBirth: "",
+      phone: "",
+      studentCode: "",
+      department: "",
+      room: "",
+      avtUrl: "",
+    });
+    setIsEditing(false);
+    setSelectedStudentId(null);
+  };
 
   const handleDeleteStudent = (studentId) => {
     if (window.confirm("Bạn muốn xóa sinh viên này không?")) {
@@ -50,8 +66,23 @@ export default function Students() {
     }
   };
 
+  const handleEditStudent = (student) => {
+    setFormData({
+      fullName: student.fullName,
+      dateOfBirth: student.dateOfBirth,
+      phone: student.phone,
+      studentCode: student.studentCode,
+      department: student.department,
+      room: student.room._id,
+      avtUrl: student.avtUrl,
+    });
+    setIsEditing(true);
+    setSelectedStudentId(student._id);
+    setShowForm(true);
+  };
 
-  const submitAddStudent = async () => {
+
+  const handleSubmit = async () => {
     const { fullName, studentCode, department, room } = formData;
     if (!fullName || !studentCode || !department || !room) {
       toast.error("Vui lòng nhập đầy đủ thông tin bắt buộc!");
@@ -59,28 +90,22 @@ export default function Students() {
     }
 
     try {
-      await addStudent(formData, user.accessToken, dispatch, axiosJWT);
-      toast.success("Thêm sinh viên thành công!");
+      if (isEditing) {
+        await updateStudent(formData, user.accessToken, dispatch,selectedStudentId, axiosJWT);
+        toast.success("Cập nhật sinh viên thành công!");
+      } else {
+        await addStudent(formData, user.accessToken, dispatch, axiosJWT);
+        toast.success("Thêm sinh viên thành công!");
+      }
       setShowForm(false);
       resetFormData();
-      getAllStudents(user.accessToken, dispatch, axiosJWT);
+      getAllStudents(user?.accessToken, dispatch, axiosJWT);
     } catch (err) {
       toast.error(err.response?.data?.message || "Thêm sinh viên thất bại!");
     }
   };
 
 
-  const resetFormData = () => {
-    setFormData({
-      fullName: "",
-      dateOfBirth: "",
-      phone: "",
-      studentCode: "",
-      department: "",
-      room: "",
-      avtUrl: "",
-    });
-  };
 
   // Lọc danh sách sinh viên theo searchQuery
   const filteredStudents = Array.isArray(studentList)
@@ -116,7 +141,7 @@ export default function Students() {
           />
         </div>
         <button
-          onClick={() => setShowForm(true)}
+          onClick={() => {resetFormData();setShowForm(true)}}
           className="ml-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 transition"
         >
           Add Student
@@ -129,12 +154,14 @@ export default function Students() {
 
           <div className="bg-white w-full max-w-xl p-6 rounded-lg shadow-lg relative z-10">
             <button
-              onClick={() => setShowForm(false)}
+              onClick={() => {setShowForm(false);resetFormData()}}
               className="absolute top-3 right-3 text-gray-500 hover:text-red-500 text-2xl"
             >
               <FontAwesomeIcon icon={faXmark} />
             </button>
-            <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">Thêm sinh viên mới</h2>
+            <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
+              {isEditing ? "Cập nhật sinh viên" : "Thêm sinh viên"}
+            </h2>
             <div className=" flex flex-col justify-center items-center gap-4">
               <div className="w-full mb-2">
                 <label className="text-gray-700 mb-4 text-sm font-semibold">Họ và tên:</label>
@@ -210,13 +237,13 @@ export default function Students() {
             </div>
             <div className="mt-6 flex justify-end gap-4">
               <button
-                onClick={submitAddStudent}
+                onClick={handleSubmit}
                 className="px-5 py-2 bg-red-500 text-white rounded hover:bg-red-600"
               >
-                Xác nhận
+                {isEditing ? "Cập nhật" : "Thêm"}
               </button>
               <button
-                onClick={() => setShowForm(false)}
+                onClick={() =>{ setShowForm(false);resetFormData()}}
                 className="px-5 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
               >
                 Hủy
@@ -256,6 +283,7 @@ export default function Students() {
                 </button>
                 <button
                   className="absolute top-2 left-2 text-red-500 hover:text-red-700 text-2xl"
+                 onClick={(e) => { e.stopPropagation(); handleEditStudent(student); }}
                 >
                   <FontAwesomeIcon icon={faPen} />
                 </button>
