@@ -109,9 +109,13 @@ export default function Students() {
 
   // Lọc danh sách sinh viên theo searchQuery
   const filteredStudents = Array.isArray(studentList)
-    ? studentList.filter((student) =>
-        student.fullName.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+    ? studentList.filter((student) => {
+      const query = searchQuery.toLowerCase();
+      return (
+        student.fullName.toLowerCase().includes(query) ||
+        student.studentCode.toString().toLowerCase().includes(query)
+      );
+    })
     : [];
 
   const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);

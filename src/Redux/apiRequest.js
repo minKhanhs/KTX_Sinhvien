@@ -2,7 +2,9 @@
 
 import axios from 'axios';
 import { loginStart,loginSuccess,loginFailure, registerStart,registerFailure,registerSuccess,logoutFailure,logoutStart,logoutSuccess} from './authSlice';
-import { getRoomStart,getRoomSuccess,getRoomFailure,deleteRoomFailure,deleteRoomStart,deleteRoomSuccess,addRoomFailure, addRoomStart,addRoomSuccess } from './roomSlice';
+import { getRoomStart,getRoomSuccess,getRoomFailure,deleteRoomFailure,deleteRoomStart,deleteRoomSuccess,addRoomFailure, addRoomStart,addRoomSuccess,
+    getRoomDetailsStart,getRoomDetailsSuccess,getRoomDetailsFailure
+ } from './roomSlice';
 import { getStudentStart,getStudentSuccess,getStudentFailure,deleteStudentFailure,deleteStudentStart,deleteStudentSuccess,addStudentFailure, addStudentStart,addStudentSuccess,
     updateStudentStart, updateStudentSuccess, updateStudentFailure
  } from './studentSlice';
@@ -11,10 +13,12 @@ import { getStudentStart,getStudentSuccess,getStudentFailure,deleteStudentFailur
 export const loginUser = async (user, dispatch, navigate) => {
     dispatch(loginStart());
     try {
-        const res = await axios.post('http://localhost:3000/api/login', user);
+        const res = await axios.post('http://localhost:3000/api/login', user,{
+            withCredentials: true,
+        });
         dispatch(loginSuccess(res.data));
         navigate('/');
-        return res; // để front-end kiểm tra status
+        return res; 
     } catch (err) {
         dispatch(loginFailure());
         throw err;
@@ -81,6 +85,19 @@ export const addRoom = async (roomData,accessToken, dispatch,axiosJWT) => {
         dispatch(addRoomFailure(err.response.data))
     }
 };
+export const getRoomDetails = async (accessToken, dispatch, id, axiosJWT) => {
+    dispatch(getRoomDetailsStart());
+    try{
+        const res = await axiosJWT.get(`http://localhost:3000/api/room/get_room/${id}`, {
+            headers: {token: `Bearer ${accessToken}`}
+        });
+        dispatch(getRoomDetailsSuccess(res.data));
+    }catch(err){
+        dispatch(getRoomDetailsFailure(err.response.data))
+    }
+}
+
+
 
 //Sinh Viên
 export const getAllStudents = async (accessToken,dispatch,axiosJWT) => {
@@ -115,6 +132,7 @@ export const addStudent = async (studentData,accessToken, dispatch,axiosJWT) => 
         dispatch(addStudentSuccess(res.data));
     }catch(err){
         dispatch(addStudentFailure(err.response.data))
+        throw err;
     }
 };
 export const updateStudent = async (studentData,accessToken, dispatch,id,axiosJWT) => {
@@ -126,5 +144,6 @@ export const updateStudent = async (studentData,accessToken, dispatch,id,axiosJW
         dispatch(updateStudentSuccess(res.data));
     }catch(err){
         dispatch(updateStudentFailure(err.response.data))
+        throw err;
     }
 };

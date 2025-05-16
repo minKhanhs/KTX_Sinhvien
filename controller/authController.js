@@ -32,43 +32,11 @@ const authController = {
     },
     generateAccessToken: (user) => {
         // eslint-disable-next-line no-undef
-        return jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_ACCESS_KEY, { expiresIn: "365d" });
+        return jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_ACCESS_KEY, { expiresIn: "15s" });
     },
     generateRefreshToken: (user) => {
         // eslint-disable-next-line no-undef
         return jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_REFRESH_KEY, { expiresIn: "7d" });
-    },
-    login: async(req, res) => {
-        try {
-            const user = await User.findOne({ email: req.body.email });
-            if (!user) {
-                return res.status(404).json({ message: 'Tài khoản không đúng' });
-            }
-            const validPassword = await bcrypt.compare(req.body.password, user.password);
-            if (!validPassword) {
-                return res.status(401).json({ message: 'Sai mật khẩu' });
-            }
-            if(user && validPassword) {
-                const accessToken = authController.generateAccessToken(user);
-                const refreshToken = authController.generateRefreshToken(user);
-
-                //Lưu refreshToken vào const
-                user.refreshTokens.push(refreshToken);
-                await user.save();
-
-                res.cookie("refreshToken", refreshToken, {
-                    httpOnly: true,
-                    secure: false,
-                    path: '/',
-                    sameSite: 'none',
-                });
-                // eslint-disable-next-line no-unused-vars
-                const { password, refreshTokens, ...others } = user._doc;
-                res.status(200).json({...others,accessToken}); 
-            }
-        } catch (err) {
-            res.status(500).json(err);
-        }
     },
     refreshToken: async (req, res) => {
         const refreshToken = req.cookies.refreshToken;
@@ -93,19 +61,55 @@ const authController = {
     
                 // Xóa token cũ và thêm mới
                 user.refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
+                if (user.refreshTokens.length >= 5) {
+                     user.refreshTokens.shift(); // loại bỏ cái cũ nhất
+                }
                 user.refreshTokens.push(newRefreshToken);
+
                 await user.save();
     
                 // Gửi cookie mới
                 res.cookie("refreshToken", newRefreshToken, {
                     httpOnly: true,
                     secure: false,
-                    path: '/',
+                    path: '/api',
                     sameSite: 'lax',
                 });
     
                 res.status(200).json({ accessToken: newAccessToken });
             });
+        } catch (err) {
+            res.status(500).json(err);
+        }
+    },
+    login: async(req, res) => {
+        try {
+            const user = await User.findOne({ email: req.body.email });
+            if (!user) {
+                return res.status(404).json({ message: 'Tài khoản không đúng' });
+            }
+            const validPassword = await bcrypt.compare(req.body.password, user.password);
+            if (!validPassword) {
+                return res.status(401).json({ message: 'Sai mật khẩu' });
+            }
+            if(user && validPassword) {
+                const accessToken = authController.generateAccessToken(user);
+                const refreshToken = authController.generateRefreshToken(user);
+
+                //Lưu refreshToken vào const
+                user.refreshTokens.push(refreshToken);
+                await user.save();
+
+                res.cookie("refreshToken", refreshToken, {
+                    httpOnly: true,
+                    secure: false,
+                    path: '/api',
+                    sameSite: 'lax',
+                });
+                // eslint-disable-next-line no-unused-vars
+                const { password, refreshTokens, ...others } = user._doc;
+                res.status(200).json({...others,accessToken}); 
+            }
         } catch (err) {
             res.status(500).json(err);
         }
