@@ -1,35 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes, Route, useLocation } from 'react-router-dom';
+import Navbar from "./component/navigation/NavBar";
+import Dashboard from "./pages/Dashboard";
+import Students from "./pages/Students";
+import Rooms from "./pages/Rooms";
+import Utilities from "./pages/Utilities";
+import TopBar from "./component/TopBar";
+import Page404 from "./pages/Page404";
+import PrivateRoute from './component/PrivateRoute';
+import Login from './component/Login,Register/LogIn';
+import Register from './component/Login,Register/Register';
+import UserDetail from './pages/UserDetail';
+import './App.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const location = useLocation();
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className='flex-1 flex h-screen'>
+      {!isAuthPage && <Navbar />}
+      <div className="flex-1 overflow-y-auto">
+        {!isAuthPage && <TopBar />}
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+          <Route path="/students" element={<PrivateRoute><Students /></PrivateRoute>} />
+          <Route path="/userdetail" element={<PrivateRoute><UserDetail /></PrivateRoute>} />
+          <Route path="/rooms" element={<PrivateRoute><Rooms /></PrivateRoute>} />
+          <Route path="/utilities" element={<PrivateRoute><Utilities /></PrivateRoute>} />
+          <Route path="*" element={<Page404 />} />
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        toastClassName="text-lg bg-white text-black rounded-xl shadow-md border border-gray-300 p-4 w-96"
+        bodyClassName="text-base"
+      />
+    </div>
+  );
 }
 
-export default App
+export default App;
