@@ -4,6 +4,8 @@ import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import authReducer from './authSlice';
 import roomReducer from './roomSlice';
 import studentReducer from './studentSlice';
+import utilityReducer from './utilitySlice';
+import dashboardReducer from './dashboardSlice';
 import {
   persistStore,
   persistReducer,
@@ -25,7 +27,10 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authReducer,
   rooms: roomReducer,
-  students: studentReducer,});
+  students: studentReducer,
+  utilities: utilityReducer,
+  dashboard: dashboardReducer,
+});
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 

@@ -56,10 +56,26 @@ const roomSlice = createSlice({
             state.rooms.isFetching = false;
             state.rooms.error = true;
         },
+        updateRoomStart:(state) => {
+            state.rooms.isFetching = true;
+        },
+        updateRoomSuccess:(state, action) => {
+            state.rooms.isFetching = false;
+            state.rooms.selectedRoom = action.payload;
+            const index = state.rooms.allRooms.findIndex(room => room._id === action.payload._id);
+            if (index !== -1) {
+                state.rooms.allRooms[index] = action.payload;
+            }
+        },
+        updateRoomFailure:(state) => {
+            state.rooms.isFetching = false;
+            state.rooms.error = true;
+        },
     },
 })
 
 export const {getRoomStart, getRoomSuccess, getRoomFailure,deleteRoomFailure,deleteRoomStart,deleteRoomSuccess, addRoomFailure, addRoomStart, addRoomSuccess,
-    getRoomDetailsStart,getRoomDetailsSuccess,getRoomDetailsFailure,clearRoomDetails
+    getRoomDetailsStart,getRoomDetailsSuccess,getRoomDetailsFailure,clearRoomDetails,
+    updateRoomStart,updateRoomSuccess,updateRoomFailure
 } = roomSlice.actions;
 export default roomSlice.reducer;

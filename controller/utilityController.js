@@ -26,7 +26,7 @@ const utilityController = {
             try{
                 const utility = await Utility.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true});
                 if(!utility) return res.status(404).json({message: 'Utility not found'});
-                res.status(200).json("Utility updated successfully");
+                res.status(200).json(utility);
             }catch(err){
                 res.status(500).json(err);
             }

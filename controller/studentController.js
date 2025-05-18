@@ -4,25 +4,36 @@ import { Student,Room } from "../Model/KTXModel.js";
 const studentController = {
     //add student
     addStudent: async (req, res) => {
-        try{
+        try {
             const existing = await Student.findOne({ studentCode: req.body.studentCode });
             if (existing) {
                 return res.status(400).json({ message: 'Mã sinh viên đã tồn tại' });
             }
+
+            if (req.body.room) {
+                const room = await Room.findById(req.body.room);
+                if (!room) return res.status(404).json({ message: 'Room not found' });
+
+                // Kiểm tra số lượng học sinh trong phòng
+                if (room.students.length >= room.maxStudents) {
+                    return res.status(400).json({ message: 'Phòng đã đầy' });
+                }
+            }
+
             const newStudent = new Student(req.body);
             const savedStudent = await newStudent.save();
-            if(req.body.room) {
-                const room = await Room.findById(req.body.room);
-                if(!room) return res.status(404).json({message: 'Room not found'});
-                room.students.push(savedStudent._id);
-                await room.updateOne({$push: {students: savedStudent._id}});
-            };
+
+            if (req.body.room) {
+                await Room.findByIdAndUpdate(req.body.room, { $push: { students: savedStudent._id } });
+            }
+
             res.status(200).json(savedStudent);
-        }catch(err){
+        } catch (err) {
             console.log(err);
             res.status(500).json(err);
         }
     },
+
     //get all student
     getAllStudent: async (req, res) => {
         try{

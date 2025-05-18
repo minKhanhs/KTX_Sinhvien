@@ -30,7 +30,7 @@ export default function Students() {
   const studentList = useSelector((state) => state.students.students.allStudents);
 
   const rooms = useSelector((state) => state.rooms.rooms.allRooms);
-  const studentsPerPage = 9;
+  const studentsPerPage = 10;
   let axiosJWT = createAxios(user, dispatch, loginSuccess);
 
   // Fetch students when user changes or on mount

@@ -32,7 +32,7 @@ const authController = {
     },
     generateAccessToken: (user) => {
         // eslint-disable-next-line no-undef
-        return jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_ACCESS_KEY, { expiresIn: "15s" });
+        return jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_ACCESS_KEY, { expiresIn: "30s" });
     },
     generateRefreshToken: (user) => {
         // eslint-disable-next-line no-undef
@@ -133,7 +133,7 @@ const authController = {
     },
     updatePassword: async (req, res) => {
         try {
-            const user = await User.findById(req.params.id);
+            const user = await User.findById(req.body.userId);
             if (!user) return res.status(404).json("Người dùng không tồn tại!");
     
             const validPassword = await bcrypt.compare(req.body.oldPassword, user.password);
@@ -149,7 +149,21 @@ const authController = {
         } catch (err) {
             res.status(500).json(err);
         }
-    },       
+    },
+    updateUser: async (req, res) => {
+        try {
+            const user = await User.findById(req.body.userId);
+            if (!user) return res.status(404).json("Người dùng không tồn tại!");
+    
+            const updatedUser = await User.findByIdAndUpdate(req.body.userId, {
+                $set: req.body,
+            }, { new: true });
+    
+            res.status(200).json(updatedUser);
+        } catch (err) {
+            res.status(500).json(err);
+        }
+    },
 
 }
 export default authController;

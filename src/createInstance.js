@@ -32,7 +32,7 @@ export const createAxios = (user,dispatch,stateSuccess) => {
                     config.headers["token"] = `Bearer ${data.accessToken}`; // Đặt lại header với accessToken mới
                 } catch (error) {
                     console.error("Refresh token failed:", error);
-                    // Có thể redirect về trang đăng nhập nếu refresh thất bại
+                    window.location.href = "/login"; // Chuyển hướng đến trang đăng nhập nếu refresh token thất bại
                 }
             } else {
                 config.headers["token"] = `Bearer ${user.accessToken}`;

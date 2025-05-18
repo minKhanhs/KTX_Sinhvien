@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import { toast } from 'react-toastify';
 
+import { getUtilities, getTotalStudents, getRoomStats } from '../Redux/apiRequest'; // đường dẫn apiRequest.js
+import axios from 'axios';
+
 const Dashboard = () => {
+  const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.login.currentUser);
   const accessToken = currentUser?.accessToken;
 
+  // local state để lưu dữ liệu hiển thị
   const [stats, setStats] = useState({
     students: 0,
     totalRooms: 0,
@@ -19,44 +23,47 @@ const Dashboard = () => {
   const [utilityData, setUtilityData] = useState([]);
 
   useEffect(() => {
-    if (!currentUser || !currentUser.isAdmin) {
-      toast.error("Bạn không có quyền truy cập!");
-      return;
-    }
-    
-    const fetchStats = async () => {
-      try {
-        const headers = {
-          headers: { token: `Bearer ${accessToken}` }
-        };
+  if (!currentUser || !currentUser.isAdmin) {
+    toast.error("Bạn không có quyền truy cập!");
+    return;
+  }
 
-        const [studentsRes, roomsRes, utilitiesRes] = await Promise.all([
-          axios.get('http://localhost:3000/api/dashboard/total_students', headers),
-          axios.get('http://localhost:3000/api/dashboard/room_stats', headers),
-          axios.get('http://localhost:3000/api/dashboard/utilities', headers),
-        ]);
+  const axiosJWT = axios.create();
 
-        setStats({
-          students: studentsRes.data.totalStudents,
-          totalRooms: roomsRes.data.totalRooms,
-          emptyRooms: roomsRes.data.emptyRooms,
-          fullRooms: roomsRes.data.fullRooms,
-        });
+  const fetchAllData = async () => {
+    try {
+      const studentsRes = await getTotalStudents(accessToken, dispatch, axiosJWT);
+      const roomsRes = await getRoomStats(accessToken, dispatch, axiosJWT);
+      const utilitiesRes = await getUtilities(accessToken, dispatch, axiosJWT);
 
-        const formatted = Object.keys(utilitiesRes.data).map(month => ({
-          month,
-          electricity: utilitiesRes.data[month].electricity,
-          water: utilitiesRes.data[month].water,
+      setStats({
+        students: studentsRes.totalStudents,
+        totalRooms: roomsRes.totalRooms,
+        emptyRooms: roomsRes.emptyRooms,
+        fullRooms: roomsRes.fullRooms,
+      });
+
+      const formatted = utilitiesRes
+        .sort((a, b) => {
+          if (a._id.year !== b._id.year) return a._id.year - b._id.year;
+          return a._id.month - b._id.month;
+        })
+        .slice(-3)
+        .map(item => ({
+          month: `${item._id.year}-${String(item._id.month).padStart(2, '0')}`,
+          electricity: item.totalElectricity,
+          water: item.totalWater,
         }));
-        setUtilityData(formatted);
-      } catch (err) {
-        toast.error("Lỗi khi tải dữ liệu. Vui lòng thử lại!");
-        console.error(err);
-      }
-    };
 
-    fetchStats();
-  }, [currentUser, accessToken]);
+      setUtilityData(formatted);
+    } catch (err) {
+      toast.error("Lỗi khi tải dữ liệu. Vui lòng thử lại!");
+      console.error(err);
+    }
+  };
+
+  fetchAllData();
+}, [currentUser, accessToken, dispatch]);
 
   if (!currentUser || !currentUser.isAdmin) {
     return null;
@@ -64,7 +71,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-white p-6">
-      <h1 className="text-3xl font-bold text-blue-700 mb-6">Dashboard Thống Kê</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         <StatCard title="Tổng sinh viên thuê" value={stats.students} />
@@ -82,7 +88,7 @@ const Dashboard = () => {
             <Tooltip />
             <Legend />
             <Bar dataKey="electricity" fill="#1e40af" name="Điện (kWh)" />
-            <Bar dataKey="water" fill="#60a5fa" name="Nước (m³)" />
+            <Bar dataKey="water" fill="	#FA8072" name="Nước (m³)" />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -18,6 +18,16 @@ const authSlice = createSlice({
             isFetching: false, 
             error: false,
         },
+        updatePassword: {
+            isFetching: false,
+            success: false,
+            error: false,
+        },
+        updateUser: {
+            isFetching: false,
+            success: false,
+            error: false,
+        },
     },
     reducers: {
         loginStart: (state) => {
@@ -57,7 +67,44 @@ const authSlice = createSlice({
             state.login.isFetching = false;
             state.login.error = true;
         },
+        updatePasswordStart: (state) => {
+            state.updatePassword.isFetching = true;
+            },
+        updatePasswordSuccess: (state) => {
+            state.updatePassword.isFetching = false;
+            state.login.currentUser = null;
+            state.updatePassword.success = true;
+            },
+        updatePasswordFailure: (state) => {
+            state.updatePassword.isFetching = false;
+            state.updatePassword.error = true;
+            state.updatePassword.success = false;
+            },
+        updateUserStart: (state) => {
+            state.updateUser.isFetching = true;
+        },
+        updateUserSuccess: (state,action) => {
+            state.updateUser.isFetching = false;
+            const oldToken = state.login.currentUser?.accessToken;
+            state.login.currentUser = {
+                ...action.payload,
+                accessToken: oldToken,
+            }
+            state.updateUser.success = true;
+            
+        },
+        updateUserFailure: (state) => {
+            state.updateUser.isFetching = false;
+            state.updateUser.error = true;
+        },
+        resetUpdateUserState: (state) => {
+            state.updateUser.isFetching = false;
+            state.updateUser.success = false;
+            state.updateUser.error = false;
+        }
     },
-    })
-export const {loginStart, loginSuccess, loginFailure,registerFailure,registerStart,registerSuccess,logoutFailure,logoutStart,logoutSuccess} = authSlice.actions;
+})
+export const {loginStart, loginSuccess, loginFailure,registerFailure,registerStart,registerSuccess,logoutFailure,logoutStart,logoutSuccess,
+    updatePasswordStart, updatePasswordSuccess, updatePasswordFailure, updateUserStart, updateUserSuccess, updateUserFailure,resetUpdateUserState
+} = authSlice.actions;
 export default authSlice.reducer;

@@ -38,7 +38,7 @@ app.use(morgan('common'));
 
 
 app.use('/api', authRouter);
-app.use('/api/dashboard', middlewareController.verifyTokenAdminAuth, dashboardRouter);
+app.use('/api/dashboard', dashboardRouter);
 app.use('/api/student', studentRouter);
 app.use('/api/room', roomRouter);
 app.use('/api/utility', middlewareController.verifyTokenAdminAuth, utilityRouter);
