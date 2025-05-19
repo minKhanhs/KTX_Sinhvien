@@ -298,12 +298,11 @@ export default function Students() {
                 />
                 <div className="p-4">
                   <h2 className="text-xl font-semibold text-gray-800 truncate">{student.fullName}</h2>
-                  <h4 className="text-gray-800 text-lg mt-2"><strong>Phòng: </strong>{student.room.roomNumber}</h4>
+                  <h4 className="text-gray-800 text-lg mt-2"><strong>Phòng: </strong>{student.room ? student.room.roomNumber : 'N/A'}</h4>
                   <p className="text-gray-500 text-xs mt-2"><strong>MSSV: </strong>{student.studentCode}</p>
                   <p className="text-gray-500 text-sm"><strong>Ngành: </strong>{student.department}</p>
                   <p className="text-gray-500 text-xs mt-2"><strong>DOB: </strong>{new Date(student.dateOfBirth).toLocaleDateString("vi-VN")}</p>
                   <p className="text-gray-500 text-xs mt-2"><strong>SĐT: </strong>{student.phone}</p>
-                  
                 </div>
               </div>
             ))}

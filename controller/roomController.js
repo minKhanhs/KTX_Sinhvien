@@ -1,4 +1,4 @@
-import { Student, Room } from "../Model/KTXModel.js";
+import { Student, Room, Utility } from "../Model/KTXModel.js";
 
 const roomController = {
     addRoom: async (req, res) => {
@@ -50,8 +50,10 @@ const roomController = {
     },
     deleteRoom: async (req, res) => {
         try {
-            await Student.updateMany({ room: req.params.id }, { room: null });
-            const room = await Room.findByIdAndDelete(req.params.id);
+            const roomId = req.params.id;
+            await Student.updateMany({ room: roomId }, { room: null });
+            await Utility.deleteMany({ room: roomId });
+            const room = await Room.findByIdAndDelete(roomId);
             if (!room) return res.status(404).json({ message: 'Room not found' });
             res.status(200).json("Room deleted successfully");
         } catch (err) {
