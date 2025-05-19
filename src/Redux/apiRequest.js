@@ -117,6 +117,7 @@ export const deleteRoom = async (accessToken, dispatch, id, axiosJWT) => {
         dispatch(deleteRoomSuccess(res.data));
     }catch(err){
         dispatch(deleteRoomFailure(err.response.data))
+        throw err;
     }
 };
 export const addRoom = async (roomData,accessToken, dispatch,axiosJWT) => {
@@ -179,6 +180,7 @@ export const deleteStudent = async (accessToken, dispatch, id, axiosJWT) => {
         dispatch(deleteStudentSuccess(res.data));
     }catch(err){
         dispatch(deleteStudentFailure(err.response.data))
+        throw err;
     }
 };
 export const addStudent = async (studentData,accessToken, dispatch,axiosJWT) => {
