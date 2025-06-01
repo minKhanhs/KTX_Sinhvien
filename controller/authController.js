@@ -1,5 +1,5 @@
 //lưu trữ token 
-//1, local storage: thì dễ bị tấn công XSS (tấn công chèn mã độc vào console trang web)
+//1, local storage: thì dễ bị tấn công XSS (tấn công chèn mã độc vào input trang web)
 //2, session storage: thì dễ bị tấn công CSRF (tấn công giả mạo yêu cầu giữa các trang web)
 //3, cookie: thì dễ bị tấn công CSRF (tấn công giả mạo yêu cầu giữa các trang web)
 //4, httpOnly cookie: thì dễ bị tấn công CSRF (tấn công giả mạo yêu cầu giữa các trang web) khắc phục được bằng cách thêm SameSite=None; Secure vào cookie

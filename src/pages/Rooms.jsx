@@ -139,6 +139,14 @@ export default function Rooms() {
       toast.error("Vui lòng nhập đầy đủ thông tin bắt buộc!");
       return;
     }
+    if (isNaN(maxStudents) || Number(maxStudents) <= 0) {
+      toast.error("Số học sinh phải là số dương!");
+      return;
+    }
+    if (isNaN(price) || Number(price) <= 0) {
+      toast.error("Giá phải là số dương!");
+      return;
+    }
 
     try {
       await addRoom(formData, user.accessToken, dispatch, axiosJWT);

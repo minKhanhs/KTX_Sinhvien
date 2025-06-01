@@ -3,7 +3,6 @@ import Navbar from "./component/navigation/NavBar";
 import Dashboard from "./pages/Dashboard";
 import Students from "./pages/Students";
 import Rooms from "./pages/Rooms";
-import Utilities from "./pages/Utilities";
 import TopBar from "./component/TopBar";
 import Page404 from "./pages/Page404";
 import PrivateRoute from './component/PrivateRoute';
@@ -30,7 +29,6 @@ function App() {
           <Route path="/students" element={<PrivateRoute><Students /></PrivateRoute>} />
           <Route path="/userdetail" element={<PrivateRoute><UserDetail /></PrivateRoute>} />
           <Route path="/rooms" element={<PrivateRoute><Rooms /></PrivateRoute>} />
-          <Route path="/utilities" element={<PrivateRoute><Utilities /></PrivateRoute>} />
           <Route path="*" element={<Page404 />} />
         </Routes>
       </div>

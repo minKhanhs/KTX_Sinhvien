@@ -24,6 +24,7 @@ export default function Students() {
     room: "",
     avtUrl: "",
   });
+  const [sortOption, setSortOption] = useState("default");
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.login?.currentUser);
@@ -83,9 +84,21 @@ export default function Students() {
 
 
   const handleSubmit = async () => {
-    const { fullName, studentCode, department, room } = formData;
+    const { fullName, studentCode, department, room, phone, dateOfBirth } = formData;
     if (!fullName || !studentCode || !department || !room) {
       toast.error("Vui lòng nhập đầy đủ thông tin bắt buộc!");
+      return;
+    }
+    if (isNaN(studentCode) || Number(studentCode) <= 0) {
+      toast.error("Mã sinh viên phải là số dương!");
+      return;
+    }
+    if (phone && !/^(0|\+84)[0-9]{9,10}$/.test(phone)) {
+      toast.error("Số điện thoại không hợp lệ!");
+      return;
+    }
+    if (dateOfBirth && new Date(dateOfBirth) > new Date()) {
+      toast.error("Ngày sinh không hợp lệ!");
       return;
     }
 
@@ -107,15 +120,22 @@ export default function Students() {
 
 
 
-  // Lọc danh sách sinh viên theo searchQuery
+  // Lọc và sắp xếp danh sách sinh viên theo searchQuery và sortOption
   const filteredStudents = Array.isArray(studentList)
-    ? studentList.filter((student) => {
-      const query = searchQuery.toLowerCase();
-      return (
-        student.fullName.toLowerCase().includes(query) ||
-        student.studentCode.toString().toLowerCase().includes(query)
-      );
-    })
+    ? studentList
+        .filter((student) => {
+          const query = searchQuery.toLowerCase();
+          return (
+            student.fullName.toLowerCase().includes(query) ||
+            student.studentCode.toString().toLowerCase().includes(query)
+          );
+        })
+        .sort((a, b) => {
+          if (sortOption === "az") {
+            return a.fullName.localeCompare(b.fullName, "vi", { sensitivity: "base" });
+          }
+          return 0;
+        })
     : [];
 
   const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
@@ -144,12 +164,22 @@ export default function Students() {
             className="w-full pl-10 pr-4 py-2 border rounded shadow focus:outline-none focus:ring-2 focus:ring-red-500"
           />
         </div>
-        <button
-          onClick={() => {resetFormData();setShowForm(true)}}
-          className="ml-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 transition"
-        >
-          Add Student
-        </button>
+        <div className="flex items-center">
+          <select
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+            className="mr-2 px-4 py-2 rounded border shadow focus:outline-none"
+          >
+            <option value="default">Sắp xếp mặc định</option>
+            <option value="az">Tên A-Z</option>
+          </select>
+          <button
+            onClick={() => {resetFormData();setShowForm(true)}}
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 transition"
+          >
+            Add Student
+          </button>
+        </div>
       </div>
 
       {showForm && (
