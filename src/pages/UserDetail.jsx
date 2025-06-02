@@ -82,24 +82,24 @@ const UserDetail = () => {
   if (!user) return <div>Loading user data...</div>;
 
   return (
-    <div className="flex gap-8 px-8 py-6">
+    <div className="flex flex-col md:flex-row gap-8 px-2 md:px-8 py-6">
       {/* Left: User Info */}
-      <div className="w-1/2 space-y-4 h-2/3">
-        <div className="border p-6 rounded-lg bg-gray-100 shadow-md">
+      <div className="w-full md:w-1/2 space-y-4 h-2/3">
+        <div className="border p-4 md:p-6 rounded-lg bg-gray-100 shadow-md">
           <h1 className="text-2xl font-bold mb-2">Thông tin cá nhân</h1>
-          <div className="flex gap-4 items-center">
+          <div className="flex flex-col sm:flex-row gap-4 items-center">
             <div className="border bg-gray-100 px-2 py-2 border-gray-200 rounded-lg">
               <img
                 src={avtUrl || user.avtUrl || "/avt404.jpg"}
                 alt="Avatar"
-                className="object-cover w-90 h-100"
+                className="object-cover w-32 h-32 md:w-36 md:h-36 md:rounded-none rounded-full"
               />
             </div>
             <div className="flex flex-col gap-2 w-full">
               {isEditing ? (
                 <>
-                <label className="text-sm font-semibold mb-1 mt-2">Avatar</label>
-                <input
+                  <label className="text-sm font-semibold mb-1 mt-2">Avatar</label>
+                  <input
                     type="text"
                     value={avtUrl}
                     onChange={(e) => setAvtUrl(e.target.value)}
@@ -171,8 +171,8 @@ const UserDetail = () => {
       </div>
 
       {/* Right: Change Password */}
-      <div className="w-1/2">
-        <div className="border p-6 rounded-lg bg-gray-100 shadow-md space-y-10">
+      <div className="w-full md:w-1/2">
+        <div className="border p-4 md:p-6 rounded-lg bg-gray-100 shadow-md space-y-6">
           <h3 className="text-lg font-bold">Đổi mật khẩu</h3>
           <label className="text-sm font-semibold mb-2 mt-2">Mật khẩu cũ</label>
           <input
@@ -194,19 +194,19 @@ const UserDetail = () => {
           <input
             type="password"
             placeholder="Xác nhận mật khẩu mới"
-            className="border px-3 py-2 rounded w-full mb-27"
+            className="border px-3 py-2 rounded w-full mb-4"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </div>
         <div className="flex justify-end mt-6">
-            <button
-              onClick={handlePasswordChange}
-              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
-            >
-              Đổi mật khẩu
-            </button>
-          </div>
+          <button
+            onClick={handlePasswordChange}
+            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+          >
+            Đổi mật khẩu
+          </button>
+        </div>
       </div>
     </div>
   );
