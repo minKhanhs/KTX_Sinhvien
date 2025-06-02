@@ -19,6 +19,7 @@ export default function Rooms() {
     waterUsage: '',
     date: new Date().toISOString().split('T')[0],
   });
+  const [roomStatus, setRoomStatus] = useState("all");
 
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -169,11 +170,18 @@ export default function Rooms() {
     });
   };
 
-  // Lọc danh sách phòng theo searchQuery
+  // Lọc danh sách phòng theo searchQuery và roomStatus
   const filteredRooms = Array.isArray(roomList)
-  ? roomList.filter((room) =>
-      room.roomNumber.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+  ? roomList.filter((room) => {
+      const matchSearch = room.roomNumber.toLowerCase().includes(searchQuery.toLowerCase());
+      if (roomStatus === "full") {
+        return matchSearch && room.students?.length >= room.maxStudents;
+      }
+      if (roomStatus === "empty") {
+        return matchSearch && (room.students?.length || 0) < room.maxStudents;
+      }
+      return matchSearch;
+    })
   : [];
 
   const totalPages = Math.ceil(filteredRooms.length / roomsPerPage);
@@ -202,12 +210,23 @@ export default function Rooms() {
             className="w-full pl-10 pr-4 py-2 border rounded shadow focus:outline-none focus:ring-2 focus:ring-red-500"
           />
         </div>
+        <div className="flex items-center space-x-4">
+        <select
+          value={roomStatus}
+          onChange={(e) => setRoomStatus(e.target.value)}
+          className="px-4 py-2 rounded border shadow focus:outline-none"
+        >
+          <option value="all">Tất cả</option>
+          <option value="empty">Phòng trống</option>
+          <option value="full">Phòng đầy</option>
+        </select>
         <button
           onClick={() => setShowForm(true)}
           className="ml-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 transition"
         >
           Add Room
         </button>
+        </div>
       </div>
         {showForm && (
           <div className="fixed inset-0 flex justify-center items-center z-50">
