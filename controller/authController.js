@@ -2,7 +2,7 @@
 //1, local storage: thì dễ bị tấn công XSS (tấn công chèn mã độc vào input trang web)
 //2, session storage: thì dễ bị tấn công CSRF (tấn công giả mạo yêu cầu giữa các trang web)
 //3, cookie: thì dễ bị tấn công CSRF (tấn công giả mạo yêu cầu giữa các trang web)
-//4, httpOnly cookie: thì dễ bị tấn công CSRF (tấn công giả mạo yêu cầu giữa các trang web) khắc phục được bằng cách thêm SameSite=None; Secure vào cookie
+//4, httpOnly cookie: thì dễ bị tấn công CSRF (tấn công giả mạo yêu cầu giữa các trang web) khắc phục được bằng cách thêm SameSite; Secure vào cookie
 //-> sử dụng Redux Store: để lưu trữ accesstoken (lưu trong bộ nhớ k bị tấn công XSS)
 //-> sử dụng httpOnly cookie: để lưu trữ refreshtoken (lưu trong cookie k bị tấn công CSRF)
 
@@ -11,17 +11,19 @@ import {User} from '../Model/KTXModel.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import sanitize from 'mongo-sanitize'; //validate input từ login form chống injection
 dotenv.config();
 
 
 const authController = {
     register: async(req, res) => {
         try {
+            const cleanBody = sanitize(req.body);
             const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(req.body.password, salt);
+            const hashedPassword = await bcrypt.hash(cleanBody.password, salt);
             const newUser = await new User({
-                email: req.body.email,
-                fullName: req.body.fullName,
+                email: cleanBody.email,
+                fullName: cleanBody.fullName,
                 password: hashedPassword,
             });
             const user = await newUser.save();
@@ -84,11 +86,12 @@ const authController = {
     },
     login: async(req, res) => {
         try {
-            const user = await User.findOne({ email: req.body.email });
+            const cleanBody = sanitize(req.body);
+            const user = await User.findOne({ email: cleanBody.email });
             if (!user) {
                 return res.status(404).json({ message: 'Tài khoản không đúng' });
             }
-            const validPassword = await bcrypt.compare(req.body.password, user.password);
+            const validPassword = await bcrypt.compare(cleanBody.password, user.password);
             if (!validPassword) {
                 return res.status(401).json({ message: 'Sai mật khẩu' });
             }
